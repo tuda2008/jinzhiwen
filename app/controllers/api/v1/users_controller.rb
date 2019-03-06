@@ -1,4 +1,6 @@
 class Api::V1::UsersController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  
   def wechat_auth
   	user = User.find_or_create_by_wechat(params[:code])
   	if user

@@ -40,7 +40,7 @@ class User < ApplicationRecord
     return nil unless open_id
     entity = self.find_by(open_id: open_id)
     unless self.find_by(open_id: open_id)
-      entity = self.create(open_id: open_id, session_key: session_key)
+      entity = self.create(open_id: open_id, session_key: session_key, gender: 0)
     end
     return entity
   end

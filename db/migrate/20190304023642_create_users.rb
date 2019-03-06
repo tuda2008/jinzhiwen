@@ -10,7 +10,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string   :country
       t.string   :province
       t.string   :city
-      t.integer  :gender, null: false, default: User::GENDERS["未知"]
+      t.integer  :gender, default: User::GENDERS["未知"]
 
       t.timestamps
     end
