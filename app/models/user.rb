@@ -31,6 +31,9 @@ class User < ApplicationRecord
 
   has_many :messages
 
+  scope :male, -> { where(gender: 1) }
+  scope :female, -> { where(gender: 2) }
+
   def self.find_or_create_by_wechat(code)
     return nil unless code
     wechat_request_url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{ENV["WECHAT_APP_ID"]}&secret=#{ENV["WECHAT_APP_SECRET"]}&js_code=#{code}&grant_type=authorization_code"
