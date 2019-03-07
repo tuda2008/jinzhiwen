@@ -21,7 +21,7 @@ class Api::V1::UsersController < ApplicationController
       	if user
       	  user.update_attributes({:country => params[:country], :province => params[:province], :city => params[:city],
       	  	:nickname => params[:nickName], :gender => params[:gender], :avatar_url => params[:avatarUrl]})
-      	  render json: { status: 1, message: "ok" }
+      	  render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: user.id).count } }
         else
           render json: { status: 0, message: "更新用户信息失败" }
         end
@@ -37,6 +37,7 @@ class Api::V1::UsersController < ApplicationController
       	  render json: { status: 1, message: "ok", 
       	  	data: {
               id: user.id,
+              device_num: UserDevice.where(user_id: user.id).count,
       		    user: {
       		  	  nickName: user.nickname,
       	        avatarUrl: user.avatar_url,
