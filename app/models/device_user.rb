@@ -12,4 +12,5 @@
 #
 
 class DeviceUser < ApplicationRecord
+  belongs_to :device
 end

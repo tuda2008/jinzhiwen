@@ -20,7 +20,7 @@ ActiveAdmin.register User do
     end
     column :nickname
     column :avatar_url do |user|
-      image_tag(user.avatar_url)
+      image_tag(user.avatar_url, size: "48x48") unless user.avatar_url.blank?
     end
     column :province
     column :city
@@ -38,7 +38,7 @@ ActiveAdmin.register User do
 	  end
       row :nickname
       row :avatar_url do |user|
-        image_tag(user.avatar_url)
+        image_tag(user.avatar_url) unless user.avatar_url.blank?
       end
       row :province
       row :city

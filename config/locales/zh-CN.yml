@@ -75,7 +75,9 @@
         created_at: "创建于"
         updated_at: "更新于"
       device:
+        device_uuid: "UUID"
         status_id: "状态"
+        device_status: "状态"
         alias: "设备名"
         wifi_mac: "网关mac"
         monitor_sn: "绑定监控sn"

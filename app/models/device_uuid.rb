@@ -24,6 +24,8 @@ class DeviceUuid < ApplicationRecord
   belongs_to :category
   belongs_to :product
 
+  has_one :device, foreign_key: 'uuid'
+
   validates :supplier_id, :category_id, :product_id, :protocol, :uuid, :auth_password, :code, presence: true
   validates :uuid, uniqueness: { case_sensitive: false }, length: { in: 8..12 }
   validates :auth_password, length: { in: 4..6 }
