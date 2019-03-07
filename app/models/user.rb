@@ -38,12 +38,18 @@ class User < ApplicationRecord
     return nil unless code
     wechat_request_url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{ENV["WECHAT_APP_ID"]}&secret=#{ENV["WECHAT_APP_SECRET"]}&js_code=#{code}&grant_type=authorization_code"
     response = HTTParty.post(wechat_request_url)
-    open_id = JSON.load(response.body)["openid"]
-    session_key = JSON.load(response.body)["session_key"]
+    begin
+      open_id = JSON.load(response.body)["openid"]
+      session_key = JSON.load(response.body)["session_key"]
+    rescue => e
+      p e.message
+    end
     return nil unless open_id
     entity = self.find_by(open_id: open_id)
-    unless self.find_by(open_id: open_id)
+    unless entity
       entity = self.create(open_id: open_id, session_key: session_key, gender: 0)
+    else
+      entity.update_attribute(:session_key, session_key) if session_key
     end
     return entity
   end
