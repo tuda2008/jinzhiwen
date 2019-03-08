@@ -39,7 +39,7 @@ class Api::V1::DevicesController < ApplicationController
               device_uuid.update_attribute(:active, true)
               user_device = UserDevice.where(:device => device).first
               unless user_device
-                UserDevice.create(:user =>  , :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
+                UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
               else
                 UserDevice.find_or_create(:user => @user, :device => device)
               end
