@@ -39,17 +39,17 @@ class Api::V1::DevicesController < ApplicationController
               device_uuid.update_attribute(:active, true)
               user_device = UserDevice.where(:device => device).first
               unless user_device
-                UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
+                UserDevice.create(:user =>  , :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
               else
                 UserDevice.find_or_create(:user => @user, :device => device)
               end
             end
-            render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: user.id).count } }
+            render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: @user.id).count } }
           else
-            render json: { status: 0, message: "二维码已被使用，请联系客服申请售后", data: { device_num: UserDevice.where(user_id: user.id).count }  }
+            render json: { status: 0, message: "二维码已被使用，请联系客服申请售后", data: { device_num: UserDevice.where(user_id: @user.id).count }  }
           end
         else
-          render json: { status: 0, message: "二维码不存在，请联系客服申请售后", data: { device_num: UserDevice.where(user_id: user.id).count }  }
+          render json: { status: 0, message: "二维码不存在，请联系客服申请售后", data: { device_num: UserDevice.where(user_id: @user.id).count }  }
         end
       end
     end
