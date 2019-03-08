@@ -23,7 +23,13 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def bind
-  	device_uuid = DeviceUuid.where(:uuid => params[:uuid], :auth_password => params[:password]).first
+    # todo start
+    result = params[:result]
+    return if result.blank?
+    result = result.split(",")
+    return if result.length < 2
+    # todo end
+  	device_uuid = DeviceUuid.where(:uuid => result[0], :auth_password => result[1]).first
     respond_to do |format|
       format.json do
         if device_uuid
