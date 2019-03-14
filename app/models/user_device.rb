@@ -15,7 +15,7 @@ class UserDevice < ApplicationRecord
   belongs_to :user
   belongs_to :device
 
-  validates :user_id, :device_id, :encrypted_password, presence: true
+  validates :user_id, :device_id, presence: true
   validates :user_id, :uniqueness => { :scope => :device_id }
   validates :encrypted_password, length: { allow_nil: true, minimum: 4, maximum: 6 }
 end

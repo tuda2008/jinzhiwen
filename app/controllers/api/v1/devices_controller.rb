@@ -44,7 +44,7 @@ class Api::V1::DevicesController < ApplicationController
                 UserDevice.find_or_create(:user => @user, :device => device)
               end
             end
-            render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: @user.id).count } }
+            render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: @user.id).reload.count } }
           else
             render json: { status: 0, message: "二维码已被使用，请联系客服申请售后", data: { device_num: UserDevice.where(user_id: @user.id).count }  }
           end
