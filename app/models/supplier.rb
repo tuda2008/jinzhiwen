@@ -28,8 +28,8 @@ class Supplier < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }, length: { in: 4..60 }
   validates :abbr, presence: true, uniqueness: { case_sensitive: false }, length: { in: 2..6 }
-  validates :intro, :address, length: { allow_nil: true, maximum: 160 }
-  validates :tel, length: { allow_nil: true, maximum: 60 }
+  validates :intro, :address, length: { allow_blank: true, maximum: 160 }
+  validates :tel, length: { allow_blank: true, maximum: 60 }
 
   scope :visible, -> { where(visible: true) }
   scope :invisible, -> { where(visible: false) }

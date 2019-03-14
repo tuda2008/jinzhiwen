@@ -24,7 +24,7 @@ class Product < ApplicationRecord
   accepts_nested_attributes_for :categories, :allow_destroy => true
 
   validates :title, presence: true, uniqueness: { case_sensitive: false }, length: { in: 2..60 }
-  validates :intro, length: { allow_nil: true, maximum: 160 }
+  validates :intro, length: { allow_blank: true, maximum: 160 }
 
   scope :visible, -> { where(visible: true) }
   scope :invisible, -> { where(visible: false) }
