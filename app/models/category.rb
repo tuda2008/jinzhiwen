@@ -21,6 +21,8 @@ class Category < ApplicationRecord
   has_many :products, :through => :category_products
   accepts_nested_attributes_for :products, :allow_destroy => true
 
+  has_many :device_uuids
+
   validates :title, presence: true, uniqueness: { case_sensitive: false }, length: { in: 2..60 }
   validates :intro, length: { allow_blank: true, maximum: 160 }
 

@@ -9,6 +9,7 @@ class Api::V1::DevicesController < ApplicationController
     @devices = Device.joins(:user_devices).includes(:device_status, :device_uuid).where(:user_devices => { user_id: @user.id }).page(page).per(10)
     @devices.each do |dv|
       datas << { id: dv.id, status: dv.device_status.name, uuid: dv.device_uuid.uuid, 
+                 name: dv.alias.blank? ? dv.device_uuid.category.name : dv.alias,
                  protocol: dv.device_uuid.protocol, code: dv.device_uuid.code}
     end
     respond_to do |format|
