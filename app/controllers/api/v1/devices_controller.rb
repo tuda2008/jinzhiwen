@@ -1,15 +1,15 @@
 class Api::V1::DevicesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :find_user
-  before_action :find_device, only: [:show, :unbind, :cmd]
+  before_action :find_device, only: [:show, :unbind, :cmd, :rename]
 
   def index
     page = params[:page].blank? ? 1 : params[:page].to_i
     datas = []
     @devices = Device.joins(:user_devices).includes(:device_status, :device_uuid).where(:user_devices => { user_id: @user.id }).page(page).per(10)
     @devices.each do |dv|
-      datas << { id: dv.id, status: dv.device_status.name, uuid: dv.device_uuid.uuid, 
-                 name: dv.alias.blank? ? dv.device_uuid.category.name : dv.alias,
+      datas << { id: dv.id, status: dv.device_status.name,
+                 uuid: dv.device_uuid.uuid, name: dv.name,
                  protocol: dv.device_uuid.protocol, code: dv.device_uuid.code}
     end
     respond_to do |format|
@@ -20,7 +20,16 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def show
-    
+    respond_to do |format|
+      format.json do
+        if @device
+          data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.name, uuid: @device.device_uuid.uuid, :created_at: @device.device_uuid.created_at }
+          render json: { status: 1, message: "ok", data: data } 
+        else
+          render json: { status: 0, message: "no recored yet" } 
+        end
+      end
+    end
   end
 
   def bind
@@ -65,6 +74,19 @@ class Api::V1::DevicesController < ApplicationController
           render json: { status: 1, message: "ok" }
         else
           render json: { status: 0, message: "设备不存在" }
+        end
+      end
+    end
+  end
+
+  def rename
+    respond_to do |format|
+      format.json do
+        if @device
+          @device.update_attribute(:alias, params[:name].strip)
+          render json: { status: 1, message: "ok", data: { name: params[:name].strip } } 
+        else
+          render json: { status: 0, message: "no recored yet" } 
         end
       end
     end

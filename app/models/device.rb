@@ -24,4 +24,8 @@ class Device < ApplicationRecord
   belongs_to :device_status, foreign_key: 'status_id'
 
   validates :alias, length: { in: 1..10 }
+
+  def name
+  	self.alias.blank? ? self.device_uuid.category.name : self.alias
+  end
 end

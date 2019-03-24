@@ -11,8 +11,9 @@ Rails.application.routes.draw do
 	  resources :devices, only: [:index, :show]
 	  post 'devices/bind', to: 'devices#bind'
 	  post 'devices/unbind', to: 'devices#unbind'
+    post 'devices/rename', to: 'devices#rename'
 	  resources :messages, only: [:index, :show]
-      resources :app_versions, only: [:index, :show]
+    resources :app_versions, only: [:index, :show]
 	end
   end
   #post 'user_token' => 'user_token#create'
