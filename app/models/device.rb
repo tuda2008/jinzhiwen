@@ -26,6 +26,6 @@ class Device < ApplicationRecord
   validates :alias, length: { in: 1..10 }
 
   def name
-  	self.alias.blank? ? self.device_uuid.category.name : self.alias
+  	self.alias.blank? ? self.device_uuid.category.title : self.alias
   end
 end
