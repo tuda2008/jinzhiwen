@@ -6,7 +6,7 @@ class Api::V1::DevicesController < ApplicationController
   def index
     page = params[:page].blank? ? 1 : params[:page].to_i
     datas = []
-    @devices = Device.joins(:user_devices).includes(:device_status, :device_uuid).where(:user_devices => { user_id: @user.id }).page(page).per(10)
+    @devices = Device.joins(:user_devices).includes(:device_status, :device_uuid).where(:user_devices => { user_id: @user.id }).reload.page(page).per(10)
     @devices.each do |dv|
       datas << { id: dv.id, status: dv.device_status.name,
                  uuid: dv.device_uuid.uuid, name: dv.name,
@@ -23,7 +23,7 @@ class Api::V1::DevicesController < ApplicationController
     respond_to do |format|
       format.json do
         if @device
-          data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.name, uuid: @device.device_uuid.uuid, :created_at: @device.device_uuid.created_at }
+          data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, uuid: @device.device_uuid.uuid, created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
           render json: { status: 1, message: "ok", data: data } 
         else
           render json: { status: 0, message: "no recored yet" } 
