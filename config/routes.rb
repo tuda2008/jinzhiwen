@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       post 'devices/cmd', to: 'devices#cmd'
       post 'devices/rename', to: 'devices#rename'
       post 'devices/users', to: 'devices#users'
+      post 'devices/edit_user', to: 'devices#edit_user'
   	  resources :messages, only: [:index, :show]
       resources :app_versions, only: [:index, :show]
   	end

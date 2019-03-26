@@ -127,6 +127,14 @@ class Api::V1::DevicesController < ApplicationController
     end
   end
 
+  def edit_user
+    respond_to do |format|
+      format.json do
+        render json: { status: 1, message: "ok" }
+      end
+    end
+  end
+
   private
     def find_user
       @user = User.find_by(open_id: params[:openid])
