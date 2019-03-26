@@ -1,7 +1,7 @@
 class Api::V1::DevicesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :find_user
-  before_action :find_device, only: [:show, :unbind, :cmd, :rename]
+  before_action :find_device, only: [:show, :unbind, :cmd, :rename, :users]
 
   def index
     page = params[:page].blank? ? 1 : params[:page].to_i
@@ -93,9 +93,14 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def cmd
-    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:cmd], lock_type: params[:lock_type], lock_num: params[:lock_num])
-    du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_num]])
-    du.save if du.valid?
+    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], lock_type: params[:lock_type], lock_num: params[:lock_num])
+    if params[:lock_cmd].include?("remove")
+      du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]])
+      du.save if du.valid?
+    else
+      du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
+      du.destory if du
+    end
     respond_to do |format|
       format.json do
         if msg.valid?
@@ -113,7 +118,7 @@ class Api::V1::DevicesController < ApplicationController
     users = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type]).reload.page(page).per(10)
     datas = []
     users.each do |du|
-      datas << { id: du.id, username: du.username, device_num: du.username }
+      datas << { id: du.id, username: du.username, device_num: du.device_num }
     end
     respond_to do |format|
       format.json do

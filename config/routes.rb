@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   	  post 'devices/unbind', to: 'devices#unbind'
       post 'devices/cmd', to: 'devices#cmd'
       post 'devices/rename', to: 'devices#rename'
-      get 'devices/users', to: 'devices#users'
+      post 'devices/users', to: 'devices#users'
   	  resources :messages, only: [:index, :show]
       resources :app_versions, only: [:index, :show]
   	end
