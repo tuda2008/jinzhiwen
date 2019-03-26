@@ -4,11 +4,12 @@ class Api::V1::MessagesController < ApplicationController
 
   def index
     page = params[:page].blank? ? 1 : params[:page].to_i
+    query_type = params[:query_type].blank? ? 1 : params[:query_type].to_i
     datas = []
   	if params[:device_id]
-      if params[:query_date] == "today"
+      if query_type == 1
         @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).includes(:device).page(params[:page]).per(10)
-      elsif params[:query_date] == "yesterday"
+      elsif query_type == 2
         @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).includes(:device).page(params[:page]).per(10)
       else
         @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).includes(:device).page(params[:page]).per(10)
@@ -17,12 +18,12 @@ class Api::V1::MessagesController < ApplicationController
         datas << { id: msg.id, oper_cmd: msg.oper_cmd,
                    lock_num: msg.lock_num, lock_type: msg.lock_type,
                    device_name: msg.device.name,
-                   created_at: params[:query_date] == "last_week" ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
+                   created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	else
-      if params[:query_date] == "today"
+      if query_type == 1
         @messages = Message.visible.today.where(user_id: @user.id).page(params[:page]).per(10)
-      elsif params[:query_date] == "yesterday"
+      elsif query_type == 2
         @messages = Message.visible.yesterday.where(user_id: @user.id).page(params[:page]).per(10)
       else
         @messages = Message.visible.last_week.where(user_id: @user.id).page(params[:page]).per(10)
@@ -30,7 +31,7 @@ class Api::V1::MessagesController < ApplicationController
       @messages.each do |msg|
         datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],
                    lock_num: msg.lock_num.blank? ? "" : msg.lock_num, lock_type: Message::TYPENAMES[msg.lock_type],
-                   created_at: params[:query_date] == "last_week" ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
+                   created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	end
     respond_to do |format|
