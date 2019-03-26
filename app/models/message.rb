@@ -19,6 +19,12 @@
 
 class Message < ApplicationRecord
   LOCKTYPES = { finger: 1, password: 2, card: 3 }
+  
+  TYPENAMES = { "1" => "指纹", "2" => "密码", "3" => "IC卡" }
+  CMD_NAMES = { "reg_finger" => "注册指纹", "reg_password" => "注册密码", "reg_card" => "注册IC卡",
+  	            "remove_finger" => "注册指纹", "remove_password" => "注册密码", "remove_card" => "注册IC卡",
+  	            "get_open_num" => "获取开门次数", "get_qoe" => "获取电量" }
+
 
   belongs_to :user
   belongs_to :device
@@ -26,4 +32,8 @@ class Message < ApplicationRecord
   scope :visible, -> { where(is_deleted: false) }
   scope :invisible, -> { where(is_deleted: true) }
   scope :smart_lock, -> { where(device_type: "lock") }
+  
+  scope :today, -> { where("DATE(created_at)=?", Date.today) }
+  scope :yesterday, -> { where("DATE(created_at)=?", Date.today-1) }
+  scope :last_week, -> { where("DATE(created_at)>?", Date.today-7) }
 end
