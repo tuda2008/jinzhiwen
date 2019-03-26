@@ -18,6 +18,8 @@
 #
 
 class Message < ApplicationRecord
+  LOCKTYPES = { finger: 1, password: 2, card: 3 }
+
   belongs_to :user
   belongs_to :device
 

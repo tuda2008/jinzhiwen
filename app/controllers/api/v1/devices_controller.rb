@@ -93,7 +93,33 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def cmd
+    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:cmd], lock_type: params[:lock_type], lock_num: params[:lock_num])
+    du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_num]])
+    du.save if du.valid?
+    respond_to do |format|
+      format.json do
+        if msg.valid?
+          msg.save
+          render json: { status: 1, message: "ok" } 
+        else
+          render json: { status: 0, message: msg.errors.full_messages.to_sentence } 
+        end
+      end
+    end
+  end
 
+  def users
+    page = params[:page].blank? ? 1 : params[:page].to_i
+    users = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type]).reload.page(page).per(10)
+    datas = []
+    users.each do |du|
+      datas << { id: du.id, username: du.username, device_num: du.username }
+    end
+    respond_to do |format|
+      format.json do
+        render json: { status: 1, message: "ok", data: datas, total_pages: users.total_pages, current_page: page }
+      end
+    end
   end
 
   private
