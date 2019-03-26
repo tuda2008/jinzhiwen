@@ -95,11 +95,11 @@ class Api::V1::DevicesController < ApplicationController
   def cmd
     msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], lock_type: params[:lock_type], lock_num: params[:lock_num])
     if params[:lock_cmd].include?("remove")
+      du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
+      du.destroy if du
+    else
       du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]])
       du.save if du.valid?
-    else
-      du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
-      du.destory if du
     end
     respond_to do |format|
       format.json do
