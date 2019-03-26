@@ -128,9 +128,14 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def edit_user
+    du = DeviceUser.where(id: params[:id], device_num: params[:num]).first
     respond_to do |format|
       format.json do
-        render json: { status: 1, message: "ok" }
+        if du && du.update_attribute(:username, params[:name].strip)
+          render json: { status: 1, message: "ok" }
+        else
+          render json: { status: 0, message: "error" }
+        end
       end
     end
   end
