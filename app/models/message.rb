@@ -23,13 +23,13 @@ class Message < ApplicationRecord
   TYPENAMES = { "1" => "指纹", "2" => "密码", "3" => "IC卡" }
   CMD_NAMES = { "reg_finger" => "注册指纹", "reg_password" => "注册密码", "reg_card" => "注册IC卡",
   	            "remove_finger" => "注册指纹", "remove_password" => "注册密码", "remove_card" => "注册IC卡",
-  	            "get_open_num" => "获取开门次数", "get_qoe" => "获取电量" }
+  	            "get_open_num" => "获取开门次数", "get_qoe" => "获取电量", "open_door" => "APP开门" }
 
 
   belongs_to :user
   belongs_to :device
 
-  scope :visible, -> { where(is_deleted: false) }
+  scope :visible, -> { where(is_deleted: false).order("messages.id desc") }
   scope :invisible, -> { where(is_deleted: true) }
   scope :smart_lock, -> { where(device_type: "lock") }
   
