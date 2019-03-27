@@ -44,4 +44,8 @@ class Message < ApplicationRecord
       self.lock_type.blank? ? "" : Message::TYPENAMES["#{self.lock_type}"]
   	end
   end
+
+  def lock_number
+  	(self.lock_num.blank? || self.oper_cmd=="get_qoe") ? "" : self.lock_num
+  end
 end
