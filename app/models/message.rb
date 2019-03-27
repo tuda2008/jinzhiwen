@@ -36,4 +36,12 @@ class Message < ApplicationRecord
   scope :today, -> { where("DATE(created_at)=?", Date.today) }
   scope :yesterday, -> { where("DATE(created_at)=?", Date.today-1) }
   scope :last_week, -> { where("DATE(created_at)>?", Date.today-7) }
+
+  def content
+  	if self.oper_cmd=="get_qoe"
+      self.lock_num==1 ? "电量低" : "电量充足"
+  	else
+      self.lock_type.blank? ? "" : Message::TYPENAMES["#{self.lock_type}"]
+  	end
+  end
 end
