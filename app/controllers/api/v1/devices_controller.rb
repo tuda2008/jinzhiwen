@@ -102,8 +102,7 @@ class Api::V1::DevicesController < ApplicationController
       du.save if du.valid?
     elsif params[:lock_cmd]=="init"
       Device.transaction do
-        DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
-        Message.where(user_id: @user.id, device_id: @device.id).update_all(is_deleted: true)
+        DeviceUuid.where(id: @device.uuid).update_all(active: false)
         @device.destroy
       end
     end
