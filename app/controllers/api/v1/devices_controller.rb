@@ -100,6 +100,12 @@ class Api::V1::DevicesController < ApplicationController
     elsif params[:lock_cmd].include?("reg")
       du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]])
       du.save if du.valid?
+    elsif params[:lock_cmd]=="init"
+      Device.transaction do
+        DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
+        Message.where(user_id: @user.id, device_id: @device.id).update_all(is_deleted: true)
+        @device.destroy
+      end
     end
     respond_to do |format|
       format.json do
