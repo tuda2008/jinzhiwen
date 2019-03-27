@@ -16,7 +16,7 @@ class Api::V1::MessagesController < ApplicationController
       end
       @messages.each do |msg|
         datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],
-                   lock_num: msg.lock_num.blank? ? "" : msg.lock_num, lock_type: Message::TYPENAMES[msg.lock_type],
+                   lock_num: msg.lock_num.blank? ? "" : msg.lock_num, lock_type: msg.lock_type.blank? ? "" : Message::TYPENAMES[msg.lock_type],
                    created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	else
@@ -30,7 +30,7 @@ class Api::V1::MessagesController < ApplicationController
       @messages.each do |msg|
         datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],
                    device_name: msg.device.name,
-                   lock_num: msg.lock_num.blank? ? "" : msg.lock_num, lock_type: Message::TYPENAMES[msg.lock_type],
+                   lock_num: msg.lock_num.blank? ? "" : msg.lock_num, lock_type: msg.lock_type.blank? ? "" : Message::TYPENAMES[msg.lock_type],
                    created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	end
