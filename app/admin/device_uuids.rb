@@ -3,9 +3,9 @@ ActiveAdmin.register DeviceUuid do
 
   menu priority: 5, label: proc{ I18n.t("activerecord.models.device_uuid") }
 
-  filter :supplier_id, as: :select, collection: Supplier.all.pluck(:name, :id)
-  filter :category_id, as: :select, collection: Category.all.pluck(:title, :id)
-  filter :product_id, as: :select, collection: Product.all.pluck(:title, :id)
+  filter :supplier
+  filter :category
+  filter :product
   filter :protocol, as: :select, collection: DeviceUuid::PROTOCOL_COLLECTION
   filter :active
 
