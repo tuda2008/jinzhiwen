@@ -21,7 +21,7 @@ ActiveAdmin.register DeviceStatus do
 
     f.inputs do
       f.input :name 
-      f.input :category_id, :as => :select, :collection => Category.visible.pluck(:title, :id)
+      f.input :category_id, :as => :select, :collection => Category.visible.pluck(:title, :id), prompt: "请选择"
       f.input :enable
     end
     f.actions

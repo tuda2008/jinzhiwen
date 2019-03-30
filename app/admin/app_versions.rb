@@ -46,7 +46,7 @@ ActiveAdmin.register AppVersion do
     f.inputs do
       f.input :code
       f.input :name, :as => :string
-      f.input :mobile_system, :as => :select, :collection => AppVersion::MOBILESYSTEM_COLLECTION
+      f.input :mobile_system, :as => :select, :collection => AppVersion::MOBILESYSTEM_COLLECTION, prompt: "请选择"
       f.input :content, :as => :string
     end
     f.actions

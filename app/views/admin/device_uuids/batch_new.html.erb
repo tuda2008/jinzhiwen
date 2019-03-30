@@ -1,0 +1,49 @@
+<div class="container">
+
+    <div class="flashes"></div>
+      <div id="active_admin_content" class="without_sidebar">
+        <div id="main_content_wrapper">
+          <div id="main_content">
+            <%= form_tag({:action => 'batch_create'}, { method: :post, class: "formtastic device_uuid" }) do |form| %>
+              <fieldset class="inputs">
+                <ol>
+                  <li class="select input required" id="device_uuid_supplier_id_input">
+                    <label for="device_uuid_supplier_id" class="label">厂家<abbr title="必须的">*</abbr></label>
+                    <%= select_tag "device_uuid[supplier_id]", options_from_collection_for_select(Supplier.visible, "id", "name"), prompt: "请选择" %>
+                  </li>
+                  <li class="select input required" id="device_uuid_category_id_input">
+                    <label for="device_uuid_category_id" class="label">类别<abbr title="必须的">*</abbr></label>
+                    <%= select_tag "device_uuid[category_id]", options_from_collection_for_select(Category.visible, "id", "title"), prompt: "请选择" %>
+                  </li>
+                  <li class="select input required" id="device_uuid_product_id_input">
+                    <label for="device_uuid_product_id" class="label">产品<abbr title="必须的">*</abbr></label>
+                    <%= select_tag "device_uuid[product_id]", options_from_collection_for_select(Product.visible, "id", "title"), prompt: "请选择" %>
+                  </li>
+                  <li class="select input required" id="device_uuid_protocol_input">
+                    <label for="device_uuid_protocol" class="label">所用协议<abbr title="必须的">*</abbr></label>
+                    <%= select_tag "device_uuid[protocol]", options_for_select(DeviceUuid::PROTOCOL_COLLECTION), prompt: "请选择" %>
+                  </li>
+                  <li class="select input required" id="device_uuid_total_num_input">
+                    <label for="device_uuid_total_num" class="label">新增数量<abbr title="必须的">*</abbr></label>
+                    <%= select_tag "device_uuid[total_num]", options_for_select([["10", 10], ["20", 20], ["50", 50], ["100", 100], ["200", 200], ["500", 500], ["1000", 1000], ["2000", 2000]]), prompt: "请选择" %>
+                  </li>
+                </ol>
+              </fieldset>
+
+              <fieldset class="actions">
+                <ol>
+                  <li class="action input_action" id="device_uuid_submit_action">
+                    <input type="submit" name="commit" value="立即新增" data-disable-with="立即新增" />
+                  </li>
+                  <li class="cancel">
+                    <a href="/admin/device_uuids">取消</a>
+                  </li>
+                </ol>
+              </fieldset>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+</div>
