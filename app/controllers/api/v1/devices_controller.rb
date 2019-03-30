@@ -45,13 +45,19 @@ class Api::V1::DevicesController < ApplicationController
         if device_uuid
           unless device_uuid.active
             Device.transaction do 
-              device = Device.find_or_create_by(:uuid => device_uuid.id, :status_id => 1)
+              device = Device.where(:uuid => device_uuid.id).first
+              unless device
+                device = Device.create(:uuid => device_uuid.id, :status_id => 1)
+              end
               device_uuid.update_attribute(:active, true)
               user_device = UserDevice.where(:device => device).first
               unless user_device
                 UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
               else
-                UserDevice.find_or_create(:user => @user, :device => device)
+                ud = UserDevice.where(:user_id => @user.id, :device_id => device.id).first
+                unless ud
+                  UserDevice.create(:user_id => @user.id, :device_id => device.id)
+                end
               end
             end
             render json: { status: 1, message: "ok", data: { device_num: UserDevice.where(user_id: @user.id).reload.count } }
