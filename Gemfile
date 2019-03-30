@@ -67,6 +67,9 @@ gem 'redis-rails'
 # editor
 gem 'redactor2_rails', github: 'tuda2008/redactor2_rails'
 
+# qrcode
+gem 'rqrcode'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

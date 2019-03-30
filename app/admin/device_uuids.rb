@@ -1,3 +1,4 @@
+require 'rqrcode'
 ActiveAdmin.register DeviceUuid do
   permit_params :supplier_id, :category_id, :product_id, :protocol, :uuid, :auth_password, :code
 
@@ -32,7 +33,7 @@ ActiveAdmin.register DeviceUuid do
     actions
   end
 
-  show do 
+  show do
     attributes_table do
       row :id
       row :supplier_id do |du|
@@ -51,6 +52,9 @@ ActiveAdmin.register DeviceUuid do
       row :auth_password
       row :code
       row :active
+      row :qrcode do |du|
+        render_qr_code("#{resource.uuid},#{resource.auth_password}")
+      end
       row :actived_at
       row :created_at
     end

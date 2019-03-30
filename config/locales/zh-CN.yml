@@ -103,6 +103,7 @@
         auth_password: "验证码"
         code: "通讯码"
         protocol: "所用协议"
+        qrcode: "二维码"
         active: "是否激活"
         actived_at: "激活于"
         created_at: "创建于"
