@@ -65,17 +65,27 @@ ActiveAdmin.register DeviceUuid do
 
     unless resource.id.present?
       resource = DeviceUuid.new_and_init
+      f.inputs do
+        f.input :supplier_id, :as => :select, :collection => Supplier.visible.pluck(:name, :id)
+        f.input :category_id, :as => :select, :collection => Category.visible.pluck(:title, :id)
+        f.input :product_id, :as => :select, :collection => Product.visible.pluck(:title, :id)
+        f.input :protocol, :as => :select, :collection => DeviceUuid::PROTOCOL_COLLECTION
+        f.input :uuid, :hint => "设备唯一编号", :input_html => { :value => resource.uuid, :readonly => true }
+        f.input :auth_password, :as => :string, :hint => "设备验证码", :input_html => { :value => resource.auth_password, :readonly => true }
+        f.input :code, :hint => "设备通讯码", :input_html => { :value => resource.code, :readonly => true }
+      end
+    else
+      f.inputs do
+        f.input :supplier_id, :as => :select, :collection => Supplier.visible.pluck(:name, :id)
+        f.input :category_id, :as => :select, :collection => Category.visible.pluck(:title, :id)
+        f.input :product_id, :as => :select, :collection => Product.visible.pluck(:title, :id)
+        f.input :protocol, :as => :select, :collection => DeviceUuid::PROTOCOL_COLLECTION
+        f.input :uuid, :hint => "设备唯一编号", :input_html => { :readonly => true }
+        f.input :auth_password, :as => :string, :hint => "设备验证码", :input_html => { :readonly => true }
+        f.input :code, :hint => "设备通讯码", :input_html => { :readonly => true }
+      end
     end
 
-    f.inputs do
-      f.input :supplier_id, :as => :select, :collection => Supplier.visible.pluck(:name, :id)
-      f.input :category_id, :as => :select, :collection => Category.visible.pluck(:title, :id)
-      f.input :product_id, :as => :select, :collection => Product.visible.pluck(:title, :id)
-      f.input :protocol, :as => :select, :collection => DeviceUuid::PROTOCOL_COLLECTION
-      f.input :uuid, :hint => "设备唯一编号", :input_html => { :value => resource.uuid.present? ? resource.uuid : "", :readonly => true }
-      f.input :auth_password, :as => :string, :hint => "设备验证码", :input_html => { :value => resource.auth_password.present? ? resource.auth_password : "", :readonly => true }
-      f.input :code, :hint => "设备通讯码", :input_html => { :value => resource.code.present? ? resource.code : "", :readonly => true }
-    end
     f.actions
   end
 
