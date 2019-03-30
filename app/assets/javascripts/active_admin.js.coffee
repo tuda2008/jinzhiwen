@@ -5,3 +5,4 @@
 //= require redactor2_rails/plugins/imagemanager.min
 //= require redactor2_rails/plugins/table.min
 //= require redactor/lang/zh_cn
+//= require admin/device_uuids
