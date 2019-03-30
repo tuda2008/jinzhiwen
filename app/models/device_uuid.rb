@@ -33,4 +33,12 @@ class DeviceUuid < ApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+
+  def self.new_and_init
+    du = DeviceUuid.new
+    du.uuid = SecureRandom.hex[0..7]
+    du.auth_password = SecureRandom.hex[0..3]
+    du.code = SecureRandom.hex[0..3]
+    return du
+  end
 end
