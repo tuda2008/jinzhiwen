@@ -104,7 +104,8 @@ class Api::V1::DevicesController < ApplicationController
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
       du.destroy if du
     elsif params[:lock_cmd].include?("reg")
-      du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: "##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]])
+      username = params[:user_name].blank? ? ("##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]]) : params[:user_name].strip()
+      du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: username)
       du.save if du.valid?
     elsif params[:lock_cmd]=="init"
       Device.transaction do
