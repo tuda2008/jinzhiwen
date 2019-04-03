@@ -24,29 +24,34 @@ class Api::V1::InvitationsController < ApplicationController
   def join_by_token
   	respond_to do |format|
   	  format.json do
-	  	if Time.now > @invitation.invitation_expired_at || @invitation.invitation_limit == 0
-	      render json: { status: 0, message: "邀请码已过期" }
-	    else
-	      device = @invitation.device
-	      user_device = UserDevice.where(user_id: @invitation.user_id, device_id: @invitation.device_id).first
-	      if user_device.is_super_admin?
-            if UserDevice.where(device_id: @invitation.device_id, :ownership => UserDevice::OWNERSHIP[:admin]).count < UserDevice::MAX_ADMIN_LIMIT
-	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:admin])
-	      	else
-	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
-	        end
-	      else
-	      	UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
-	      end
-	      render json: { status: 1, message: "ok", data: {id: device.id, name: device.name} }
-	    end
-	  end
+        if @invitation.nil?
+          render json: { status: 0, message: "邀请码不存在" } and return
+        else
+    	  	if Time.now > @invitation.invitation_expired_at || @invitation.invitation_limit < 1
+    	      render json: { status: 0, message: "邀请码已过期" } and return
+    	    else
+    	      device = @invitation.device
+    	      user_device = UserDevice.where(user_id: @invitation.user_id, device_id: @invitation.device_id).first
+    	      if user_device.is_super_admin?
+                if UserDevice.where(device_id: @invitation.device_id, :ownership => UserDevice::OWNERSHIP[:admin]).count < UserDevice::MAX_ADMIN_LIMIT
+    	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:admin])
+    	      	else
+    	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
+    	        end
+    	      else
+    	      	UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
+    	      end
+            invitation.update_attribute((:invitation_limit, invitation.invitation_limit-1))
+    	      render json: { status: 1, message: "ok", data: {id: device.id, name: device.name} }
+    	    end
+        end
+  	  end
     end
   end
 
 private
-  def invitation_token
-  	@invitation = Invitation.find_by(invitation_token: params[:invitation_token]).includes(:device)
+  def find_invitation_token
+  	@invitation = Invitation.includes(:device).where(invitation_token: params[:invitation_token]).first
   end
 
   def find_user
