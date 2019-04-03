@@ -7,12 +7,23 @@ class Api::V1::MessagesController < ApplicationController
     query_type = params[:query_type].blank? ? 1 : params[:query_type].to_i
     datas = []
   	if params[:device_id]
-      if query_type == 1
-        @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
-      elsif query_type == 2
-        @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+      user_device = UserDevice.where(user_id: @user.id, device_id: params[:device_id]).first
+      if user_device && user_device.is_admin?
+        if query_type == 1
+          @messages = Message.visible.today.where(device_id: params[:device_id]).page(params[:page]).per(10)
+        elsif query_type == 2
+          @messages = Message.visible.yesterday.where(device_id: params[:device_id]).page(params[:page]).per(10)
+        else
+          @messages = Message.visible.last_week.where(device_id: params[:device_id]).page(params[:page]).per(10)
+        end
       else
-        @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+        if query_type == 1
+          @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+        elsif query_type == 2
+          @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+        else
+          @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+        end
       end
       @messages.each do |msg|
         datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],

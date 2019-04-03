@@ -76,7 +76,13 @@ class Api::V1::DevicesController < ApplicationController
       format.json do
         if @device
           DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
-          @device.destroy
+          user_device = UserDevice.where(:user => @user, :device => @device).first
+          if user_device.is_admin?
+            @device.destroy
+          else
+            user_device.destroy
+            #render json: { status: 0, message: "亲，只有管理员才能解绑哦" } and return
+          end
           render json: { status: 1, message: "ok" }
         else
           render json: { status: 0, message: "设备不存在" }

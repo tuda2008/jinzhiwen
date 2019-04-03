@@ -27,8 +27,18 @@ class Api::V1::InvitationsController < ApplicationController
 	  	if Time.now > @invitation.invitation_expired_at || @invitation.invitation_limit == 0
 	      render json: { status: 0, message: "邀请码已过期" }
 	    else
-	      #todo
-	      render json: { status: 1, message: "ok", data: {} }
+	      device = @invitation.device
+	      user_device = UserDevice.where(user_id: @invitation.user_id, device_id: @invitation.device_id).first
+	      if user_device.is_super_admin?
+            if UserDevice.where(device_id: @invitation.device_id, :ownership => UserDevice::OWNERSHIP[:admin]).count < UserDevice::MAX_ADMIN_LIMIT
+	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:admin])
+	      	else
+	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
+	        end
+	      else
+	      	UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
+	      end
+	      render json: { status: 1, message: "ok", data: {id: device.id, name: device.name} }
 	    end
 	  end
     end
@@ -36,7 +46,7 @@ class Api::V1::InvitationsController < ApplicationController
 
 private
   def invitation_token
-  	@invitation = Invitation.find_by(invitation_token: params[:invitation_token])
+  	@invitation = Invitation.find_by(invitation_token: params[:invitation_token]).includes(:device)
   end
 
   def find_user

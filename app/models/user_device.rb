@@ -11,6 +11,7 @@
 
 class UserDevice < ApplicationRecord
   OWNERSHIP = { user: 1, admin: 2, super_admin: 3 }
+  MAX_ADMIN_LIMIT = 5
 
   belongs_to :user
   belongs_to :device
@@ -19,4 +20,20 @@ class UserDevice < ApplicationRecord
   validates :user_id, :uniqueness => { :scope => :device_id }
   #validates :user_id, :uniqueness => { :scope => [:device_id, :ownership] }
   validates :encrypted_password, length: { allow_blank: true, minimum: 4, maximum: 6 }
+
+  before_destroy :soft_remove_messages
+
+  def soft_remove_messages
+  	if self.ownership == OWNERSHIP[:user]
+      Mesasages.where(user_id: self.user_id, device_id: self.device_id).update_all(is_deleted: true)
+    end
+  end
+
+  def is_super_admin?
+  	self.ownership == OWNERSHIP[:super_admin]
+  end
+
+  def is_admin?
+  	self.ownership == OWNERSHIP[:super_admin] || self.ownership == OWNERSHIP[:admin]
+  end
 end
