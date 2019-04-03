@@ -6,12 +6,4 @@ class Invitation < ApplicationRecord
   belongs_to :user
 
   validates :invitation_token, uniqueness: { case_sensitive: false }
-
-  def token
-  	SecureRandom.hex[0..11]
-  end
-
-  def expired
-  	Time.now + MAX_DAYS_EXPIRED * 24 * 60 * 60
-  end
 end

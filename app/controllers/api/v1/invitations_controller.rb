@@ -7,11 +7,11 @@ class Api::V1::InvitationsController < ApplicationController
   def create
   	invitation = Invitation.where(user_id: @user.id, device_id: @device.id, invitation_limit: Invitation::MAX_LIMIT).first
   	if invitation
-  	  invitation.update_attribute(:invitation_expired_at, invitation.expired)
+  	  invitation.update_attribute(:invitation_expired_at, Time.now + Invitation::MAX_DAYS_EXPIRED * 24 * 60 * 60)
   	else
   	  invitation = Invitation.new(user_id: @user.id, device_id: @device.id)
-  	  invitation.invitation_token = self.token 
-  	  invitation.invitation_expired_at = self.expired
+  	  invitation.invitation_token = SecureRandom.hex[0..11] 
+  	  invitation.invitation_expired_at = Time.now + Invitation::MAX_DAYS_EXPIRED * 24 * 60 * 60
   	  invitation.save if invitation.valid?
   	end
   	respond_to do |format|
