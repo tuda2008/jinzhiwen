@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_05_010020) do
+ActiveRecord::Schema.define(version: 2019_04_03_080634) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -134,6 +134,20 @@ ActiveRecord::Schema.define(version: 2019_03_05_010020) do
     t.index ["status_id"], name: "index_devices_on_status_id"
     t.index ["uuid"], name: "index_devices_on_uuid"
     t.index ["wifi_mac"], name: "index_devices_on_wifi_mac"
+  end
+
+  create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "device_id", null: false
+    t.string "invitation_token", null: false
+    t.integer "invitation_limit", default: 5, null: false
+    t.datetime "invitation_expired_at"
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at"
+    t.index ["device_id"], name: "index_invitations_on_device_id"
+    t.index ["invitation_token"], name: "index_invitations_on_invitation_token", unique: true
+    t.index ["user_id", "device_id"], name: "index_invitations_on_user_id_and_device_id"
+    t.index ["user_id"], name: "index_invitations_on_user_id"
   end
 
   create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
