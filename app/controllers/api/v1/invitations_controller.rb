@@ -1,6 +1,6 @@
 class Api::V1::InvitationsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :find_user, only: [:create]
+  before_action :find_user
   before_action :find_device, only: [:create]
   before_action :find_invitation_token, only: [:join_by_token]
 
