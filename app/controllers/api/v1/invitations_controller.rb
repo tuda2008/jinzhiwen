@@ -41,7 +41,7 @@ class Api::V1::InvitationsController < ApplicationController
     	      else
     	      	UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
     	      end
-            invitation.update_attribute(:invitation_limit, invitation.invitation_limit-1)
+            @invitation.update_attribute(:invitation_limit, @invitation.invitation_limit-1)
     	      render json: { status: 1, message: "ok", data: {id: device.id, name: device.name} }
     	    end
         end
