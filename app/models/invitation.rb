@@ -5,5 +5,7 @@ class Invitation < ApplicationRecord
   belongs_to :device
   belongs_to :user
 
+  has_many :user_invitors, :dependent => :destroy
+
   validates :invitation_token, uniqueness: { case_sensitive: false }
 end

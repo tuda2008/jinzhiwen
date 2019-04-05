@@ -81,6 +81,8 @@
         device_status: "状态"
         alias: "设备名"
         imei: "终端串码"
+        users: "用户"
+        invitors: "受邀用户"
         wifi_mac: "网关mac"
         monitor_sn: "绑定监控sn"
         port: "网关端口"

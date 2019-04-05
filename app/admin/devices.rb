@@ -6,4 +6,39 @@ ActiveAdmin.register Device do
   filter :imei
   filter :created_at
 
+  index do
+    selectable_column
+      id_column
+      column :device_uuid
+      column :device_status
+      column :alias
+      column :imei
+      column :users do |device|
+      	device.users.map(&:name).join(',')
+      end
+      column :created_at do |device|
+      	device.created_at.strftime('%Y-%m-%d')
+      end
+    actions
+  end
+
+  show do
+  	attributes_table do
+      row :id
+      row :device_uuid
+      row :device_status
+      row :alias
+      row :imei
+      row :users do |device|
+      	device.users.map(&:name).join(',')
+      end
+      row :invitors do |device|
+      	device.invitors.map(&:name).join(',')
+      end
+      row :created_at do |device|
+      	device.created_at.strftime('%Y-%m-%d')
+      end
+    end
+  end
+
 end

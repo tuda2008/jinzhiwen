@@ -36,4 +36,26 @@ class Device < ApplicationRecord
     ud = self.user_devices.where(user_id: user_id).first
     !ud.nil? && ud.is_admin?
   end
+
+  def invitations_by_user(user_id)
+    self.invitations.where(:invitations => { user_id: user_id })
+  end
+
+  def user_invitors_by_user(user_id)
+    self.user_invitors.where(:invitations => { user_id: user_id })
+  end
+
+  def invitors
+    User.joins(:user_devices).joins("inner join invitations on invitations.device_id=user_devices.device_id 
+      inner join user_invitors on user_invitors.invitation_id=invitations.id")
+    .select("users.id, users.nickname, users.avatar_url, invitations.user_id")
+    .where(:user_devices => { device_id: self.id } )
+  end
+
+  def invitors_by_user(user_id)
+    User.joins(:user_devices).joins("inner join invitations on invitations.device_id=user_devices.device_id 
+      inner join user_invitors on user_invitors.invitation_id=invitations.id")
+    .select("users.id, users.nickname, users.avatar_url, invitations.user_id")
+    .where(:user_devices => { device_id: self.id, user_id: user_id } )
+  end
 end
