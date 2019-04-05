@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_05_092107) do
+ActiveRecord::Schema.define(version: 2019_04_05_101055) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -173,6 +173,8 @@ ActiveRecord::Schema.define(version: 2019_04_05_092107) do
     t.index ["is_deleted"], name: "index_messages_on_is_deleted"
     t.index ["oper_cmd"], name: "index_messages_on_oper_cmd"
     t.index ["oper_username"], name: "index_messages_on_oper_username"
+    t.index ["user_id", "content", "is_deleted", "created_at"], name: "messages_user_content_visible_created"
+    t.index ["user_id", "device_id", "content", "is_deleted", "created_at"], name: "messages_user_device_content_visible_created"
     t.index ["user_id", "device_id", "is_deleted", "created_at"], name: "messages_user_device_created_at"
     t.index ["user_id", "device_id", "is_deleted"], name: "index_messages_on_user_id_and_device_id_and_is_deleted"
     t.index ["user_id", "is_deleted", "created_at"], name: "index_messages_on_user_id_and_is_deleted_and_created_at"
