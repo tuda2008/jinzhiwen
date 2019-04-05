@@ -12,19 +12,19 @@ class Api::V1::MessagesController < ApplicationController
       if user_device && user_device.is_admin?
         if query_type == 1
           if query.length > 0
-            @messages = Message.visible.today.where("device_id=? and content like %?%", params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.today.where("device_id=? and content like ?", params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.today.where(device_id: params[:device_id]).page(params[:page]).per(10)
           end
         elsif query_type == 2
           if query.length > 0
-            @messages = Message.visible.yesterday.where("device_id=? and content like %?%", params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.yesterday.where("device_id=? and content like ?", params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.yesterday.where(device_id: params[:device_id]).page(params[:page]).per(10)
           end
         else
           if query.length > 0
-            @messages = Message.visible.last_week.where("device_id=? and content like %?%", params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.last_week.where("device_id=? and content like ?", params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.last_week.where(device_id: params[:device_id]).page(params[:page]).per(10)
           end
@@ -32,19 +32,19 @@ class Api::V1::MessagesController < ApplicationController
       else
         if query_type == 1
           if query.length > 0
-            @messages = Message.visible.today.where("user_id=? and device_id=? and content like %?%", @user.id, params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.today.where("user_id=? and device_id=? and content like ?", @user.id, params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
           end
         elsif query_type == 2
           if query.length > 0
-            @messages = Message.visible.yesterday.where("user_id=? and device_id=? and content like %?%", @user.id, params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.yesterday.where("user_id=? and device_id=? and content like ?", @user.id, params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
           end
         else
           if query.length > 0
-            @messages = Message.visible.last_week.where("user_id=? and device_id=? and content like %?%", @user.id, params[:device_id], query).page(params[:page]).per(10)
+            @messages = Message.visible.last_week.where("user_id=? and device_id=? and content like ?", @user.id, params[:device_id], "%#{query}%").page(params[:page]).per(10)
           else
             @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
           end
@@ -57,19 +57,19 @@ class Api::V1::MessagesController < ApplicationController
   	else
       if query_type == 1
         if query.length > 0
-          @messages = Message.visible.today.where("user_id=? and content like %?%", @user.id, query).includes(:device).page(params[:page]).per(10)
+          @messages = Message.visible.today.where("user_id=? and content like ?", @user.id, "%#{query}%").includes(:device).page(params[:page]).per(10)
         else
           @messages = Message.visible.today.where(user_id: @user.id).includes(:device).page(params[:page]).per(10)
         end
       elsif query_type == 2
         if query.length > 0
-          @messages = Message.visible.yesterday.where("user_id=? and content like %?%", @user.id, query).includes(:device).page(params[:page]).per(10)
+          @messages = Message.visible.yesterday.where("user_id=? and content like ?", @user.id, "%#{query}%").includes(:device).page(params[:page]).per(10)
         else
           @messages = Message.visible.yesterday.where(user_id: @user.id).includes(:device).page(params[:page]).per(10)
         end
       else
         if query.length > 0
-          @messages = Message.visible.last_week.where("user_id=? and content like %?%", @user.id, query).includes(:device).page(params[:page]).per(10)
+          @messages = Message.visible.last_week.where("user_id=? and content like ?", @user.id, "%#{query}%").includes(:device).page(params[:page]).per(10)
         else
           @messages = Message.visible.last_week.where(user_id: @user.id).includes(:device).page(params[:page]).per(10)
         end
