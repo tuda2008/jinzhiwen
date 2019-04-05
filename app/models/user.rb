@@ -29,7 +29,11 @@ class User < ApplicationRecord
   has_many :user_devices, :dependent => :destroy
   has_many :devices, :through => :user_devices
 
-  has_many :messages
+  has_many :invitations, :dependent => :destroy
+  has_many :user_invitors, :dependent => :destroy
+  has_many :invitors, :through => :user_invitors, foreign_key: :user_id, class_name: :User
+
+  has_many :messages, :dependent => :destroy
 
   scope :male, -> { where(gender: 1) }
   scope :female, -> { where(gender: 2) }

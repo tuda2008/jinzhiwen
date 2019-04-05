@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_05_021442) do
+ActiveRecord::Schema.define(version: 2019_04_05_032543) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -251,6 +251,15 @@ ActiveRecord::Schema.define(version: 2019_04_05_021442) do
     t.index ["user_id"], name: "index_user_devices_on_user_id"
   end
 
+  create_table "user_invitors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "invitation_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at"
+    t.index ["invitation_id"], name: "index_user_invitors_on_invitation_id"
+    t.index ["user_id", "invitation_id"], name: "index_user_invitors_on_user_id_and_invitation_id", unique: true
+    t.index ["user_id"], name: "index_user_invitors_on_user_id"
+  end
+
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "provider", default: 1, null: false
     t.string "nickname"
@@ -267,9 +276,11 @@ ActiveRecord::Schema.define(version: 2019_04_05_021442) do
     t.string "latitude", limit: 30, default: ""
     t.string "longitude", limit: 30, default: ""
     t.string "address", limit: 120, default: ""
+    t.integer "invitor_id"
     t.index ["address"], name: "index_users_on_address"
     t.index ["city"], name: "index_users_on_city"
     t.index ["gender"], name: "index_users_on_gender"
+    t.index ["invitor_id"], name: "index_users_on_invitor_id"
     t.index ["latitude", "longitude"], name: "index_users_on_latitude_and_longitude"
     t.index ["nickname"], name: "index_users_on_nickname"
     t.index ["open_id"], name: "index_users_on_open_id"

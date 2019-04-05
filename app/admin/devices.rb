@@ -3,9 +3,7 @@ ActiveAdmin.register Device do
 
   filter :device_status  
   filter :alias
-  filter :wifi_mac
-  filter :monitor_sn
-  filter :port
+  filter :imei
   filter :created_at
 
 end

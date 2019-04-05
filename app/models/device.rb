@@ -20,8 +20,11 @@ class Device < ApplicationRecord
   has_many :device_users, :dependent => :destroy
   has_many :messages, :dependent => :destroy
 
-  belongs_to :device_uuid, -> { includes :category }, foreign_key: 'uuid'
-  belongs_to :device_status, foreign_key: 'status_id'
+  belongs_to :device_uuid, -> { includes :category }, foreign_key: :uuid
+  belongs_to :device_status, foreign_key: :status_id
+
+  has_many :invitations, :dependent => :destroy
+  has_many :user_invitors, :through => :invitations
 
   validates :alias, length: { in: 1..10 }
 

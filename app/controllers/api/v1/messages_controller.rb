@@ -5,6 +5,10 @@ class Api::V1::MessagesController < ApplicationController
   def index
     page = params[:page].blank? ? 1 : params[:page].to_i
     query_type = params[:query_type].blank? ? 1 : params[:query_type].to_i
+    query = params[:query].blank? ? "" : params[:type].strip
+    if query.length > 0
+      #todo convert query
+    end
     datas = []
   	if params[:device_id]
       user_device = UserDevice.where(user_id: @user.id, device_id: params[:device_id]).first
