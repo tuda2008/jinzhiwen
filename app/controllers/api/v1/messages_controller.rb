@@ -6,32 +6,58 @@ class Api::V1::MessagesController < ApplicationController
     page = params[:page].blank? ? 1 : params[:page].to_i
     query_type = params[:query_type].blank? ? 1 : params[:query_type].to_i
     query = params[:query].blank? ? "" : params[:type].strip
-    if query.length > 0
-      #todo convert query
-    end
     datas = []
   	if params[:device_id]
       user_device = UserDevice.where(user_id: @user.id, device_id: params[:device_id]).first
       if user_device && user_device.is_admin?
         if query_type == 1
-          @messages = Message.visible.today.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.today.where(device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.today.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         elsif query_type == 2
-          @messages = Message.visible.yesterday.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.yesterday.where(device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.yesterday.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         else
-          @messages = Message.visible.last_week.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.last_week.where(device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.last_week.where(device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         end
       else
         if query_type == 1
-          @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.today.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         elsif query_type == 2
-          @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.yesterday.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         else
-          @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          if query.length > 0
+            @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id])
+            .where("content like %?%", query).page(params[:page]).per(10)
+          else
+            @messages = Message.visible.last_week.where(user_id: @user.id, device_id: params[:device_id]).page(params[:page]).per(10)
+          end
         end
       end
       @messages.each do |msg|
-        datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],
-                   lock_num: msg.lock_number, lock_type: msg.content,
+        datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd], content: msg.content,
                    created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	else
@@ -44,8 +70,7 @@ class Api::V1::MessagesController < ApplicationController
       end
       @messages.each do |msg|
         datas << { id: msg.id, oper_cmd: Message::CMD_NAMES[msg.oper_cmd],
-                   device_name: msg.device.name,
-                   lock_num: msg.lock_number, lock_type: msg.content,
+                   device_name: msg.device.name, content: msg.content,
                    created_at: query_type==3 ? msg.created_at.strftime('%m-%d %H:%M:%S') : msg.created_at.strftime('%H:%M:%S')}
       end
   	end

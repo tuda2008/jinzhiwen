@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_05_032543) do
+ActiveRecord::Schema.define(version: 2019_04_05_092107) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -165,6 +165,8 @@ ActiveRecord::Schema.define(version: 2019_04_05_032543) do
     t.integer "lock_type"
     t.boolean "is_deleted", default: false, null: false
     t.datetime "created_at", null: false
+    t.string "content", limit: 60, default: ""
+    t.index ["content"], name: "index_messages_on_content"
     t.index ["created_at"], name: "index_messages_on_created_at"
     t.index ["device_type"], name: "index_messages_on_device_type"
     t.index ["is_deleted", "created_at"], name: "index_messages_on_is_deleted_and_created_at"

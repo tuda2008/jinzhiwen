@@ -52,7 +52,7 @@ class Api::V1::DevicesController < ApplicationController
               unless device
                 device = Device.create(:uuid => device_uuid.id, :status_id => 1)
               end
-              device_uuid.update_attribute(:active, true)
+              device_uuid.update_attribute(:active, true) unless device_uuid.active
               user_device = UserDevice.where(:device => device).first
               unless user_device
                 UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:super_admin])
@@ -108,7 +108,13 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def cmd
-    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], lock_type: params[:lock_type], lock_num: params[:lock_num])
+    content = params[:lock_num].blank? ? Message::CMD_NAMES[params[:lock_cmd]] : Message::CMD_NAMES[params[:lock_cmd]] + "(#{params[:lock_num]})"
+    if params[:lock_cmd]=="get_qoe"
+      content = Message::CMD_NAMES[params[:lock_cmd]]
+      content = params[:lock_num].to_i==1 ? content + " 电量低" : content + " 电量充足"
+    end
+    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], 
+       content:, content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     if params[:lock_cmd].include?("remove")
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
       du.destroy if du

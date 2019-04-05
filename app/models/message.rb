@@ -23,11 +23,12 @@ class Message < ApplicationRecord
   TYPENAMES = { "1" => "指纹", "2" => "密码", "3" => "IC卡" }
   CMD_NAMES = { "reg_finger" => "注册指纹", "reg_password" => "注册密码", "reg_card" => "注册IC卡",
   	            "remove_finger" => "删除指纹", "remove_password" => "删除密码", "remove_card" => "删除IC卡",
-  	            "get_open_num" => "获取开门次数", "get_qoe" => "获取电量", "open_door" => "APP开门" }
-
+  	            "get_open_num" => "获取开门次数", "get_qoe" => "获取电量", "app_open_door" => "APP开门" }
 
   belongs_to :user
   belongs_to :device
+
+  validates :content, length: { allow_blank: true, maximum: 50 }
 
   scope :visible, -> { where(is_deleted: false).order("messages.id desc") }
   scope :invisible, -> { where(is_deleted: true) }
@@ -36,14 +37,6 @@ class Message < ApplicationRecord
   scope :today, -> { where("DATE(created_at)=?", Date.today) }
   scope :yesterday, -> { where("DATE(created_at)=?", Date.today-1) }
   scope :last_week, -> { where("DATE(created_at)>?", Date.today-7) }
-
-  def content
-  	if self.oper_cmd=="get_qoe"
-      self.lock_num==1 ? "电量低" : "电量充足"
-  	else
-      self.lock_type.blank? ? "" : Message::TYPENAMES["#{self.lock_type}"]
-  	end
-  end
 
   def lock_number
   	(self.lock_num.blank? || self.oper_cmd=="get_qoe") ? "" : self.lock_num
