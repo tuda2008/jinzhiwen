@@ -112,8 +112,10 @@ class Api::V1::DevicesController < ApplicationController
     if params[:lock_cmd]=="get_qoe"
       content = Message::CMD_NAMES[params[:lock_cmd]]
       content = params[:lock_num].to_i==1 ? content + " 电量低" : content + " 电量充足"
+      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type])
+    else
+      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     end
-    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     if params[:lock_cmd].include?("remove")
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
       du.destroy if du
@@ -129,11 +131,11 @@ class Api::V1::DevicesController < ApplicationController
     end
     respond_to do |format|
       format.json do
-        if msg.valid?
-          msg.save
+        if @msg.valid?
+          @msg.save
           render json: { status: 1, message: "ok" } 
         else
-          render json: { status: 0, message: msg.errors.full_messages.to_sentence } 
+          render json: { status: 0, message: @msg.errors.full_messages.to_sentence } 
         end
       end
     end

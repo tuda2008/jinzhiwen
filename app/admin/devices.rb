@@ -16,9 +16,7 @@ ActiveAdmin.register Device do
       column :users do |device|
       	device.users.map(&:name).join(',')
       end
-      column :created_at do |device|
-      	device.created_at.strftime('%Y-%m-%d')
-      end
+      column :created_at
     actions
   end
 
@@ -35,9 +33,7 @@ ActiveAdmin.register Device do
       row :invitors do |device|
       	device.invitors.map(&:name).join(',')
       end
-      row :created_at do |device|
-      	device.created_at.strftime('%Y-%m-%d')
-      end
+      row :created_at
     end
   end
 

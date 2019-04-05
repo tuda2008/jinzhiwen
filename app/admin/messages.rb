@@ -22,9 +22,7 @@ ActiveAdmin.register Message do
     column :lock_num do |msg|
       msg.lock_number
     end
-    column :content do |msg|
-      msg.content
-    end
+    column :content
     column :is_deleted
     column :created_at
     actions
@@ -41,9 +39,7 @@ ActiveAdmin.register Message do
       row :lock_num do |msg|
         msg.lock_number
       end
-      row :content do |msg|
-        msg.content
-      end
+      row :content
       row :is_deleted
       row :created_at
     end
