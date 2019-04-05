@@ -26,6 +26,11 @@ class Device < ApplicationRecord
   validates :alias, length: { in: 1..10 }
 
   def name
-  	self.alias.blank? ? self.device_uuid.category.title : self.alias
+    self.alias.blank? ? self.device_uuid.category.title : self.alias
+  end
+
+  def is_admin?(user_id)
+    ud = self.user_devices.where(user_id: user_id).first
+    !ud.nil? && ud.is_admin?
   end
 end

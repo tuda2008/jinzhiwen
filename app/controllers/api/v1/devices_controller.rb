@@ -23,7 +23,10 @@ class Api::V1::DevicesController < ApplicationController
     respond_to do |format|
       format.json do
         if @device
-          data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, uuid: @device.device_uuid.uuid, code: @device.device_uuid.code, created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
+          data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, 
+                   uuid: @device.device_uuid.uuid, code: @device.device_uuid.code, 
+                   is_admin: @device.is_admin?(@user.id), imei: @device.imei,
+                   created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
           render json: { status: 1, message: "ok", data: data } 
         else
           render json: { status: 0, message: "no recored yet" } 

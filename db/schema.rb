@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_03_080634) do
+ActiveRecord::Schema.define(version: 2019_04_05_021442) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -128,7 +128,9 @@ ActiveRecord::Schema.define(version: 2019_04_03_080634) do
     t.bigint "port"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "imei", limit: 40, default: ""
     t.index ["alias"], name: "index_devices_on_alias"
+    t.index ["imei"], name: "index_devices_on_imei"
     t.index ["monitor_sn"], name: "index_devices_on_monitor_sn"
     t.index ["port"], name: "index_devices_on_port"
     t.index ["status_id"], name: "index_devices_on_status_id"
@@ -262,8 +264,13 @@ ActiveRecord::Schema.define(version: 2019_04_03_080634) do
     t.integer "gender", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "latitude", limit: 30, default: ""
+    t.string "longitude", limit: 30, default: ""
+    t.string "address", limit: 120, default: ""
+    t.index ["address"], name: "index_users_on_address"
     t.index ["city"], name: "index_users_on_city"
     t.index ["gender"], name: "index_users_on_gender"
+    t.index ["latitude", "longitude"], name: "index_users_on_latitude_and_longitude"
     t.index ["nickname"], name: "index_users_on_nickname"
     t.index ["open_id"], name: "index_users_on_open_id"
     t.index ["provider", "open_id"], name: "index_users_on_provider_and_open_id", unique: true
