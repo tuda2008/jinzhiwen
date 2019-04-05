@@ -113,8 +113,7 @@ class Api::V1::DevicesController < ApplicationController
       content = Message::CMD_NAMES[params[:lock_cmd]]
       content = params[:lock_num].to_i==1 ? content + " 电量低" : content + " 电量充足"
     end
-    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], 
-       content:, content, lock_type: params[:lock_type], lock_num: params[:lock_num])
+    msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     if params[:lock_cmd].include?("remove")
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
       du.destroy if du
