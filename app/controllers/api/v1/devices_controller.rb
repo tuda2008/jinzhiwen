@@ -123,7 +123,7 @@ class Api::V1::DevicesController < ApplicationController
         @device.update_attributes({:status => 2, :open_num => params[:lock_num].to_i})
       end
     elsif !params[:open_time].blank?
-      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num], :created_ate: params[:open_time])
+      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num], created_at: params[:open_time])
     else
       @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     end
