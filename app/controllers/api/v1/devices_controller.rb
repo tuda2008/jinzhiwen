@@ -24,7 +24,8 @@ class Api::V1::DevicesController < ApplicationController
       format.json do
         if @device
           data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, 
-                   uuid: @device.device_uuid.uuid, code: @device.device_uuid.code, 
+                   uuid: @device.device_uuid.uuid, code: @device.device_uuid.code,
+                   open_num: @device.open_num, low_qoe: @device.low_qoe,
                    is_admin: @device.is_admin?(@user.id), imei: @device.imei,
                    created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
           render json: { status: 1, message: "ok", data: data } 
@@ -113,6 +114,16 @@ class Api::V1::DevicesController < ApplicationController
       content = Message::CMD_NAMES[params[:lock_cmd]]
       content = params[:lock_num].to_i==1 ? content + " 电量低" : content + " 电量充足"
       @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type])
+      @device.update_attributes({:status => 2, :low_qoe => (params[:lock_num].to_i==1)})
+    elsif params[:lock_cmd]=="get_open_num"
+      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
+      if @device.open_num > params[:lock_num].to_i
+        @device.update_attributes({:status => 2, :open_num => @device.open_num + params[:lock_num].to_i})
+      else
+        @device.update_attributes({:status => 2, :open_num => params[:lock_num].to_i})
+      end
+    elsif !params[:open_time].blank?
+      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num], :created_ate: params[:open_time])
     else
       @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
     end

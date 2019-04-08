@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_05_101055) do
+ActiveRecord::Schema.define(version: 2019_04_08_072414) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -129,9 +129,13 @@ ActiveRecord::Schema.define(version: 2019_04_05_101055) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "imei", limit: 40, default: ""
+    t.integer "open_num", default: 0
+    t.boolean "low_qoe", default: false
     t.index ["alias"], name: "index_devices_on_alias"
     t.index ["imei"], name: "index_devices_on_imei"
+    t.index ["low_qoe"], name: "index_devices_on_low_qoe"
     t.index ["monitor_sn"], name: "index_devices_on_monitor_sn"
+    t.index ["open_num"], name: "index_devices_on_open_num"
     t.index ["port"], name: "index_devices_on_port"
     t.index ["status_id"], name: "index_devices_on_status_id"
     t.index ["uuid"], name: "index_devices_on_uuid"
