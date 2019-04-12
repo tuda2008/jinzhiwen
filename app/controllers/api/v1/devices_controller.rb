@@ -109,13 +109,24 @@ class Api::V1::DevicesController < ApplicationController
   end
 
   def cmd
-    content = params[:lock_num].blank? ? Message::CMD_NAMES[params[:lock_cmd]] : Message::CMD_NAMES[params[:lock_cmd]] + "(#{params[:lock_num]})"
+    content = Message::CMD_NAMES[params[:lock_cmd]]
+    username = ""
+    unless params[:lock_num].blank?
+      du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
+      if du
+        username = du.username
+        content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
+      else
+        content = Message::CMD_NAMES[params[:lock_cmd]] + "(#{params[:lock_num]})"
+      end
+    end
     if params[:lock_cmd]=="get_qoe"
       content = Message::CMD_NAMES[params[:lock_cmd]]
       content = params[:lock_num].to_i==1 ? content + " 电量低" : content + " 电量充足"
       @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type])
       @device.update_attributes({:status => 2, :low_qoe => (params[:lock_num].to_i==1)})
     elsif params[:lock_cmd]=="get_open_num"
+      content = Message::CMD_NAMES[params[:lock_cmd]] + "(#{params[:lock_num]})"
       @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
       if @device.open_num > params[:lock_num].to_i
         @device.update_attributes({:status => 2, :open_num => @device.open_num + params[:lock_num].to_i})
@@ -123,9 +134,17 @@ class Api::V1::DevicesController < ApplicationController
         @device.update_attributes({:status => 2, :open_num => params[:lock_num].to_i})
       end
     elsif !params[:open_time].blank?
-      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num], created_at: params[:open_time])
+      if params[:lock_num].blank?
+        @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], created_at: params[:open_time])
+      else
+        @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], oper_username: username, content: content, lock_type: params[:lock_type], lock_num: params[:lock_num], created_at: params[:open_time])
+      end
     else
-      @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
+      if params[:lock_num].blank?
+        @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type])
+      else
+        @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], oper_username: username, content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
+      end
     end
     if params[:lock_cmd].include?("remove")
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
