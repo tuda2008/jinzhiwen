@@ -14,7 +14,7 @@ ActiveAdmin.register Device do
       column :alias
       column :imei
       column :users do |device|
-      	device.users.map(&:name).join(',')
+      	device.users.uniq.map(&:name).join(',')
       end
       column :created_at
     actions
@@ -28,10 +28,10 @@ ActiveAdmin.register Device do
       row :alias
       row :imei
       row :users do |device|
-      	device.users.map(&:name).join(',')
+      	device.users.uniq.map(&:name).join(',')
       end
       row :invitors do |device|
-      	device.invitors.map(&:name).join(',')
+      	device.invitors.uniq.map(&:name).join(',')
       end
       row :created_at
     end
