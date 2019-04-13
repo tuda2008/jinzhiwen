@@ -31,7 +31,6 @@ class User < ApplicationRecord
 
   has_many :invitations, :dependent => :destroy
   has_many :user_invitors, :dependent => :destroy
-  has_many :invitors, :through => :user_invitors, foreign_key: :user_id, class_name: :User
 
   has_many :messages, :dependent => :destroy
 
@@ -61,5 +60,11 @@ class User < ApplicationRecord
     end
     return entity
   end
-
+  
+  def invitors
+    User.joins("inner join invitations it on it.user_id=users.id
+                inner join user_invitors ui on ui.invitation_id=it.id")
+    .select("distinct users.id, users.nickname, users.avatar_url")
+    .where("it.user_id=?", self.id)
+  end
 end

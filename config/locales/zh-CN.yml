@@ -73,6 +73,7 @@
         province: "省-直辖市"
         city: "市"
         gender: "性别"
+        invitors: "已邀请用户"
         created_at: "创建于"
         updated_at: "更新于"
       device:

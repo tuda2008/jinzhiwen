@@ -13,7 +13,6 @@ ActiveAdmin.register User do
   scope("女性F") { |user| user.female }
 
   index do
-    selectable_column
     id_column
     column :provider do |user|
       User::PROVIDER_HASH[user.provider]
@@ -34,8 +33,8 @@ ActiveAdmin.register User do
     attributes_table do
       row :id
       row :provider do |user|
-	    User::PROVIDER_HASH[user.provider]
-	  end
+	      User::PROVIDER_HASH[user.provider]
+	    end
       row :nickname
       row :avatar_url do |user|
         image_tag(user.avatar_url) unless user.avatar_url.blank?
@@ -44,6 +43,9 @@ ActiveAdmin.register User do
       row :city
       row :gender do |user|
         User::GENDER_HASH[user.gender]
+      end
+      row :invitors do |user|
+        user.invitors.map(&:name).join(',')
       end
     end
   end
