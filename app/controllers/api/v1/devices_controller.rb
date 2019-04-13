@@ -117,7 +117,7 @@ class Api::V1::DevicesController < ApplicationController
         username = du.username
         content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
       else
-        content = Message::CMD_NAMES[params[:lock_cmd]] + "(#{params[:lock_num]})"
+        content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]})"
       end
     end
     if params[:lock_cmd]=="get_qoe"

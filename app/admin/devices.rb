@@ -13,25 +13,31 @@ ActiveAdmin.register Device do
       column :device_status
       column :alias
       column :imei
-      column :users do |device|
-      	device.users.uniq.map(&:name).join(',')
+      column :super_admin do |device|
+      	device.super_user.name
       end
       column :created_at
     actions
   end
 
   show do
-  	attributes_table do
+    attributes_table do
       row :id
       row :device_uuid
       row :device_status
       row :alias
       row :imei
+      row :super_admin do |device|
+        device.super_user.name
+      end
+      row :admin_user do |device|
+        device.super_user.name
+      end
       row :users do |device|
-      	device.users.uniq.map(&:name).join(',')
+        device.users.map(&:name).join(',')
       end
       row :invitors do |device|
-      	device.invitors.uniq.map(&:name).join(',')
+      	device.invitors.map(&:name).join(',')
       end
       row :created_at
     end

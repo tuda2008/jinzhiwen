@@ -17,6 +17,12 @@ class Device < ApplicationRecord
   has_many :user_devices, :dependent => :destroy
   has_many :users, :through => :user_devices
 
+  has_one :super_user_devices, -> {where ownership: UserDevice::OWNERSHIP[:super_admin]}, class_name: :UserDevice
+  has_one :super_admin, through: :super_user_devices, class_name: :User
+
+  has_many :admin_user_devices, -> {where ownership: UserDevice::OWNERSHIP[:admin]}, class_name: :UserDevice
+  has_many :admin_user, through: :admin_user_devices, class_name: :User
+
   has_many :device_users, :dependent => :destroy
   has_many :messages, :dependent => :destroy
 
@@ -37,6 +43,10 @@ class Device < ApplicationRecord
     !ud.nil? && ud.is_admin?
   end
 
+  def super_admin
+
+  end
+
   def invitations_by_user(user_id)
     self.invitations.where(:invitations => { user_id: user_id })
   end
@@ -46,16 +56,16 @@ class Device < ApplicationRecord
   end
 
   def invitors
-    User.joins(:user_devices).joins("inner join invitations on invitations.device_id=user_devices.device_id 
-      inner join user_invitors on user_invitors.invitation_id=invitations.id")
-    .select("users.id, users.nickname, users.avatar_url, invitations.user_id")
-    .where(:user_devices => { device_id: self.id } )
+    User.joins("inner join user_invitors ui on users.id=ui.user_id 
+                inner join invitations it on it.id=ui.invitation_id")
+    .select("distinct users.id, users.nickname, users.avatar_url, invitations.user_id")
+    .where("it.device_id=?", self.id)
   end
 
   def invitors_by_user(user_id)
-    User.joins(:user_devices).joins("inner join invitations on invitations.device_id=user_devices.device_id 
-      inner join user_invitors on user_invitors.invitation_id=invitations.id")
-    .select("users.id, users.nickname, users.avatar_url, invitations.user_id")
-    .where(:user_devices => { device_id: self.id, user_id: user_id } )
+    User.joins("inner join user_invitors ui on users.id=ui.user_id 
+                inner join invitations it on it.id=ui.invitation_id")
+    .select("distinct users.id, users.nickname, users.avatar_url, invitations.user_id")
+    .where("it.device_id=? and it.user_id=?", self.id, user_id)
   end
 end
