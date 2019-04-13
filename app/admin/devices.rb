@@ -14,7 +14,7 @@ ActiveAdmin.register Device do
       column :alias
       column :imei
       column :super_admin do |device|
-      	device.super_user.name
+      	device.super_admin.nil? ? "" : device.super_admin.name
       end
       column :created_at
     actions
@@ -28,10 +28,10 @@ ActiveAdmin.register Device do
       row :alias
       row :imei
       row :super_admin do |device|
-        device.super_user.name
+        device.super_admin.nil? ? "" : device.super_admin.name
       end
       row :admin_user do |device|
-        device.super_user.name
+        device.admin_users.map(&:name).join(',')
       end
       row :users do |device|
         device.users.map(&:name).join(',')

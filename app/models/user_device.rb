@@ -16,6 +16,9 @@ class UserDevice < ApplicationRecord
   belongs_to :user
   belongs_to :device
 
+  belongs_to :super_admin, foreign_key: :user_id, class_name: :User
+  belongs_to :admin_users, foreign_key: :user_id, class_name: :User
+
   validates :user_id, :device_id, presence: true
   validates :user_id, :uniqueness => { :scope => :device_id }
   #validates :user_id, :uniqueness => { :scope => [:device_id, :ownership] }
