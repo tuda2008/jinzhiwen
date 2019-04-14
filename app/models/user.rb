@@ -41,11 +41,48 @@ class User < ApplicationRecord
     self.nickname
   end
 
+  def self.token
+    token = @weixin_token
+    if token.nil?
+      token = reload_token
+    else
+      token = reload_token if Time.now > @wx_token_expires_in
+    end
+    return token
+  end
+
+  def self.reload_token
+    begin
+      response = HTTParty.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxf0a3da6416d7da5a&secret=e5a2f95e614262c080fec9524428d59b", timeout: 2)
+      @weixin_token = JSON.parse(response.body)["access_token"]
+      @wx_token_expires_in = Time.now + JSON.load(response.body)["expires_in"]
+    rescue => e
+      p e.message
+    end
+    return @weixin_token
+  end
+
+  def self.send_msg(openid, content, type)
+    body = type == "text" ? {
+      touser: openid,
+      msgtype: "#{type}",
+      text:
+      {
+        content: content
+      }} : content
+    begin
+      response = HTTParty.post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=#{self.token}", body: body.to_json, timeout: 2)
+      result = JSON.parse(response.body)
+    rescue => e
+      p e.message
+    end
+  end
+
   def self.find_or_create_by_wechat(code)
     return nil unless code
     wechat_request_url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{ENV["WECHAT_APP_ID"]}&secret=#{ENV["WECHAT_APP_SECRET"]}&js_code=#{code}&grant_type=authorization_code"
-    response = HTTParty.post(wechat_request_url)
     begin
+      response = HTTParty.post(wechat_request_url, timeout: 2)
       open_id = JSON.load(response.body)["openid"]
       session_key = JSON.load(response.body)["session_key"]
     rescue => e
@@ -62,8 +99,7 @@ class User < ApplicationRecord
   end
   
   def invitors
-    User.joins("inner join invitations it on it.user_id=users.id
-                inner join user_invitors ui on ui.invitation_id=it.id")
+    User.joins("inner join user_invitors ui on ui.user_id=users.id inner join invitations it on it.id=ui.invitation_id")
     .select("distinct users.id, users.nickname, users.avatar_url")
     .where("it.user_id=?", self.id)
   end
