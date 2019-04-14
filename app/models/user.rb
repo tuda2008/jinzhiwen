@@ -53,7 +53,7 @@ class User < ApplicationRecord
 
   def self.reload_token
     begin
-      response = HTTParty.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxf0a3da6416d7da5a&secret=e5a2f95e614262c080fec9524428d59b", timeout: 2)
+      response = HTTParty.get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=#{ENV["WECHAT_APP_ID"]}&secret=#{ENV["WECHAT_APP_SECRET"]}", timeout: 2)
       @weixin_token = JSON.parse(response.body)["access_token"]
       @wx_token_expires_in = Time.now + JSON.load(response.body)["expires_in"]
     rescue => e
