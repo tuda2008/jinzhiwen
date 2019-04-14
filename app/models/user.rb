@@ -71,7 +71,7 @@ class User < ApplicationRecord
         content: content
       }} : content
     begin
-      response = HTTParty.post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=#{self.token}", body: body.to_json, timeout: 2)
+      response = HTTParty.post("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=#{self.token}", body: JSON.generate(body), timeout: 2)
       result = JSON.parse(response.body)
     rescue => e
       p e.message
