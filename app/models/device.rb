@@ -23,6 +23,9 @@ class Device < ApplicationRecord
   has_many :admin_user_devices, -> {where :user_devices => {ownership: UserDevice::OWNERSHIP[:admin]}}, class_name: :UserDevice
   has_many :admin_users, through: :admin_user_devices, class_name: :User
 
+  has_many :all_admin_user_devices, -> {where "user_devices.ownership=#{UserDevice::OWNERSHIP[:super_admin]} or user_devices.ownership=#{UserDevice::OWNERSHIP[:admin]}"}, class_name: :UserDevice
+  has_many :all_admin_users, through: :all_admin_user_devices, class_name: :User
+
   has_many :device_users, :dependent => :destroy
   has_many :messages, :dependent => :destroy
 

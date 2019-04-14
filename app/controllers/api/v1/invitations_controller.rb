@@ -33,7 +33,7 @@ class Api::V1::InvitationsController < ApplicationController
     	      device = @invitation.device
     	      user_device = UserDevice.where(user_id: @invitation.user_id, device_id: @invitation.device_id).first
     	      if user_device.is_super_admin?
-                if UserDevice.where(device_id: @invitation.device_id, :ownership => UserDevice::OWNERSHIP[:admin]).count < UserDevice::MAX_ADMIN_LIMIT
+              if UserDevice.where(device_id: @invitation.device_id, :ownership => UserDevice::OWNERSHIP[:admin]).count < UserDevice::MAX_ADMIN_LIMIT
     	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:admin])
     	      	else
     	      	  UserDevice.create(:user => @user, :device => device, :ownership => UserDevice::OWNERSHIP[:user])
@@ -44,6 +44,7 @@ class Api::V1::InvitationsController < ApplicationController
             ui = UserInvitor.new(:user_id => @user.id, :invitation_id => @invitation.id)
             ui.save if ui.valid?
             @invitation.update_attribute(:invitation_limit, @invitation.invitation_limit-1)
+            WxMsgInvitationNotifierWorker.perform_in(10.seconds, device.all_admin_users, "#{@invitation.user.name} 邀请 #{@user.name} 加入了 #{device.name}", "text")
     	      render json: { status: 1, message: "ok", data: {id: device.id, name: device.name} }
     	    end
         end
