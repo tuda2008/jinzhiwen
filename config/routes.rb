@@ -3,9 +3,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  authenticate :user, lambda { |u| u.admin? } do
-    mount Sidekiq::Web => '/sidekiq'
-  end
+  mount Sidekiq::Web => '/sidekiq'
   Sidekiq::Web.set :session_secret, Rails.application.credentials[:secret_key_base]
 
   mount Redactor2Rails::Engine => '/redactor2_rails'
