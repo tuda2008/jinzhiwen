@@ -117,7 +117,17 @@ class Api::V1::DevicesController < ApplicationController
         username = du.username
         content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
       else
-        content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]})"
+        if params[:lock_type]==2 && du.nil? && params[:lock_cmd]=="password_open_door"
+          du = DeviceUser.where(device_id: @device.id, device_type: 4, device_num: params[:lock_num]).first
+          if du
+            username = du.username
+            content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
+          else
+            content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]})"
+          end
+        else
+          content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]})"
+        end
       end
     end
     if params[:lock_cmd]=="get_qoe"
