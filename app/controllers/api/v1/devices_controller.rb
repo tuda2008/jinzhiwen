@@ -151,6 +151,9 @@ class Api::V1::DevicesController < ApplicationController
       end
     else
       if params[:lock_num].blank?
+        if params[:lock_cmd]=="ble_open_door"
+          content = content + "(#{@user.name})"
+        end
         @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], content: content, lock_type: params[:lock_type])
       else
         if params[:lock_cmd].include?("reg")
