@@ -28,8 +28,8 @@ class UserDevice < ApplicationRecord
   before_destroy :soft_remove_messages
 
   def soft_remove_messages
-  	if self.ownership == OWNERSHIP[:user]
-      Mesasages.where(user_id: self.user_id, device_id: self.device_id).update_all(is_deleted: true)
+    if self.ownership == OWNERSHIP[:user]
+      Message.where(user_id: self.user_id, device_id: self.device_id).update_all(is_deleted: true)
     end
   end
 
