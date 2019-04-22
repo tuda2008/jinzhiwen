@@ -79,9 +79,9 @@ class Api::V1::DevicesController < ApplicationController
     respond_to do |format|
       format.json do
         if @device
-          DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
           user_device = UserDevice.where(:user => @user, :device => @device).first
           if user_device.is_admin?
+            DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
             @device.destroy
           else
             user_device.destroy
@@ -117,7 +117,7 @@ class Api::V1::DevicesController < ApplicationController
         username = du.username
         content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
       else
-        if params[:lock_type]==2 && du.nil? && params[:lock_cmd]=="password_open_door"
+        if params[:lock_cmd]=="password_open_door"
           du = DeviceUser.where(device_id: @device.id, device_type: 4, device_num: params[:lock_num]).first
           if du
             username = du.username
