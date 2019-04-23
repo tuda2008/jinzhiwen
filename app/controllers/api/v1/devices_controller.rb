@@ -117,7 +117,7 @@ class Api::V1::DevicesController < ApplicationController
         username = du.username
         content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
       else
-        if params[:lock_cmd]=="password_open_door"
+        if params[:lock_cmd]=="password_open_door" || params[:lock_cmd]=="remove_password"
           du = DeviceUser.where(device_id: @device.id, device_type: 4, device_num: params[:lock_num]).first
           if du
             username = du.username
