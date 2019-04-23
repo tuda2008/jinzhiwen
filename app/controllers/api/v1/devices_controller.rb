@@ -167,7 +167,16 @@ class Api::V1::DevicesController < ApplicationController
     if params[:lock_cmd].include?("remove")
       WxMsgDeviceCmdNotifierWorker.perform_in(10.seconds, @device.all_admin_users.map(&:id), "[#{@device.name}]#{@user.name} #{content}", "text")
       du = DeviceUser.where(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num]).first
-      du.destroy if du
+      if params[:lock_type].to_i==2
+        if du
+          du.destroy
+        else
+          du = DeviceUser.where(device_id: @device.id, device_type: 4, device_num: params[:lock_num]).first
+          du.destroy if du
+        end
+      else
+        du.destroy if du
+      end
     elsif params[:lock_cmd].include?("reg")
       username = params[:user_name].blank? ? ("##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]]) : params[:user_name].strip()
       du = DeviceUser.new(device_id: @device.id, device_type: params[:lock_type], device_num: params[:lock_num], username: username)
