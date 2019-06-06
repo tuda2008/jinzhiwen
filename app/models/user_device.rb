@@ -11,7 +11,7 @@
 
 class UserDevice < ApplicationRecord
   OWNERSHIP = { user: 1, admin: 2, super_admin: 3 }
-  MAX_ADMIN_LIMIT = 5
+  MAX_ADMIN_LIMIT = 3
 
   belongs_to :user
   belongs_to :device

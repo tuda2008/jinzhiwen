@@ -86,10 +86,10 @@ ActiveAdmin.register DeviceUuid do
           border_modules: 4,
           module_px_size: 6,
           file: "#{Rails.root}/app/assets/images/qrcode/#{du.id}.png")
-      image_url("/assets/qrcode/#{du.id}.png")
+      asset_data_url("qrcode/#{du.id}.png")
     end
     column :protocol do |du|
-        DeviceUuid::PROTOCOL_HASH[du.protocol]
+      DeviceUuid::PROTOCOL_HASH[du.protocol]
     end
     column :active do |du|
       du.active ? "已激活" : "未激活"

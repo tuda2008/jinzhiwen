@@ -10,6 +10,7 @@ class Api::V1::DevicesController < ApplicationController
     @devices.each do |dv|
       datas << { id: dv.id, status: dv.device_status.name,
                  uuid: dv.device_uuid.uuid, name: dv.name,
+                 status_id: status: dv.status_id,
                  protocol: dv.device_uuid.protocol, code: dv.device_uuid.code}
     end
     respond_to do |format|
@@ -25,6 +26,7 @@ class Api::V1::DevicesController < ApplicationController
         if @device
           data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, 
                    uuid: @device.device_uuid.uuid, code: @device.device_uuid.code,
+                   status_id: status: dv.status_id,
                    open_num: @device.open_num, low_qoe: @device.low_qoe,
                    is_admin: @device.is_admin?(@user.id), imei: @device.imei,
                    created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
@@ -48,7 +50,8 @@ class Api::V1::DevicesController < ApplicationController
       format.json do
         if device_uuid
           unless device_uuid.active
-            Device.transaction do 
+            Device.transaction do
+              # todo
               device = Device.where(:uuid => device_uuid.id).first
               unless device
                 device = Device.create(:uuid => device_uuid.id, :status_id => 1)
@@ -84,6 +87,9 @@ class Api::V1::DevicesController < ApplicationController
             DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
             @device.destroy
           else
+            if UserDevice.where(device_id: @device.id).count == 1
+              DeviceUuid.where(uuid: @device.uuid).update_all(active: false)
+            end
             user_device.destroy
             #render json: { status: 0, message: "亲，只有管理员才能解绑哦" } and return
           end
@@ -159,6 +165,7 @@ class Api::V1::DevicesController < ApplicationController
         if params[:lock_cmd].include?("reg")
           username = params[:user_name].blank? ? ("##{params[:lock_num]}" + DeviceUser::TYPENAME[params[:lock_type]]) : params[:user_name].strip()
           content = Message::CMD_NAMES[params[:lock_cmd]] + "(##{params[:lock_num]}-#{username})"
+          @device.update_attributes({:status_id => 2}) if @device.status_id != 2
           WxMsgDeviceCmdNotifierWorker.perform_in(10.seconds, @device.all_admin_users.map(&:id), "[#{@device.name}]#{@user.name} #{content}", "text")
         end
         @msg = Message.new(user_id: @user.id, device_id: @device.id, oper_cmd: params[:lock_cmd], oper_username: username, content: content, lock_type: params[:lock_type], lock_num: params[:lock_num])
