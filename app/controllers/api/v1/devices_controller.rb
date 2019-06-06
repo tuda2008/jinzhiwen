@@ -10,7 +10,7 @@ class Api::V1::DevicesController < ApplicationController
     @devices.each do |dv|
       datas << { id: dv.id, status: dv.device_status.name,
                  uuid: dv.device_uuid.uuid, name: dv.name,
-                 status_id: status: dv.status_id,
+                 status_id: dv.status_id,
                  protocol: dv.device_uuid.protocol, code: dv.device_uuid.code}
     end
     respond_to do |format|
@@ -26,7 +26,7 @@ class Api::V1::DevicesController < ApplicationController
         if @device
           data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, 
                    uuid: @device.device_uuid.uuid, code: @device.device_uuid.code,
-                   status_id: status: dv.status_id,
+                   status_id: dv.status_id,
                    open_num: @device.open_num, low_qoe: @device.low_qoe,
                    is_admin: @device.is_admin?(@user.id), imei: @device.imei,
                    created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
