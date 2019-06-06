@@ -31,7 +31,7 @@ class DeviceUuid < ApplicationRecord
   validates :auth_password, length: { in: 4..6 }
   validates :code, length: { in: 4..8 }
 
-  #cattr_accessor :total_num
+  cattr_accessor :qrocde
   cattr_reader :total_num
 
   scope :active, -> { where(active: true) }
