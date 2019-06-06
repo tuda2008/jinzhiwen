@@ -1,5 +1,5 @@
 ActiveAdmin.register Message do
-
+  menu priority: 6, label: proc{ I18n.t("activerecord.models.message") }
   actions :index, :show
 
   filter :user

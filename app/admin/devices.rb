@@ -1,4 +1,6 @@
 ActiveAdmin.register Device do
+  menu priority: 7, label: proc{ I18n.t("activerecord.models.device") }
+
   actions :index, :show
 
   filter :device_status  

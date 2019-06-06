@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_08_072414) do
+ActiveRecord::Schema.define(version: 2019_06_06_142658) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -52,6 +52,16 @@ ActiveRecord::Schema.define(version: 2019_04_08_072414) do
     t.index ["code", "mobile_system"], name: "index_app_versions_on_code_and_mobile_system", unique: true
     t.index ["code"], name: "index_app_versions_on_code"
     t.index ["mobile_system"], name: "index_app_versions_on_mobile_system"
+  end
+
+  create_table "carousels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "tag", null: false
+    t.string "url"
+    t.string "images"
+    t.boolean "visible", default: false
+    t.index ["tag"], name: "index_carousels_on_tag", unique: true
+    t.index ["url"], name: "index_carousels_on_url"
+    t.index ["visible"], name: "index_carousels_on_visible"
   end
 
   create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

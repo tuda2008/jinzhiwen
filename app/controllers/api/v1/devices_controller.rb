@@ -13,14 +13,24 @@ class Api::V1::DevicesController < ApplicationController
                  status_id: dv.status_id,
                  protocol: dv.device_uuid.protocol, code: dv.device_uuid.code}
     end
+    @carousels = []
+    home_carousels = Carousel.visible.home.limit(1)
+    unless home_carousels.empty?
+      @carousels = home_carousels[0].images
+    end
     respond_to do |format|
       format.json do
-        render json: { status: 1, message: "ok", data: datas, total_pages: @devices.total_pages, current_page: page }
+        render json: { status: 1, message: "ok", data: datas, carousels: @carousels, total_pages: @devices.total_pages, current_page: page }
       end
     end
   end
 
   def show
+    @carousels = []
+    device_carousels = Carousel.visible.device.limit(1)
+    unless device_carousels.empty?
+      @carousels = device_carousels[0].images
+    end
     respond_to do |format|
       format.json do
         if @device
@@ -30,7 +40,7 @@ class Api::V1::DevicesController < ApplicationController
                    open_num: @device.open_num, low_qoe: @device.low_qoe,
                    is_admin: @device.is_admin?(@user.id), imei: @device.imei,
                    created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
-          render json: { status: 1, message: "ok", data: data } 
+          render json: { status: 1, message: "ok", data: data, carousels: @carousels } 
         else
           render json: { status: 0, message: "no recored yet" } 
         end

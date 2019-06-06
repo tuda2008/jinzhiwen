@@ -11,6 +11,7 @@
       supplier: "厂家"
       device: "设备"
       device_uuid: "设备码"
+      carousel: "展播"
       product: "产品"
       comment: "评论"
     attributes:
@@ -113,3 +114,8 @@
         active: "是否激活"
         actived_at: "激活于"
         created_at: "创建于"
+      carousel:
+        tag: "显示区域"
+        url: "链接地址"
+        images: "展播图片"
+        visible: "是否显示"

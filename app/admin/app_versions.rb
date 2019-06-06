@@ -1,4 +1,6 @@
 ActiveAdmin.register AppVersion do
+  menu priority: 11, label: proc{ I18n.t("activerecord.models.app_version") }
+
   permit_params :code, :name, :mobile_system, :content
 
   filter :code
