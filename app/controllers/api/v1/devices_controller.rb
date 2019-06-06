@@ -26,7 +26,7 @@ class Api::V1::DevicesController < ApplicationController
         if @device
           data = { id: @device.id, name: @device.name, product: @device.device_uuid.product.title, 
                    uuid: @device.device_uuid.uuid, code: @device.device_uuid.code,
-                   status_id: dv.status_id,
+                   status_id: @device.status_id,
                    open_num: @device.open_num, low_qoe: @device.low_qoe,
                    is_admin: @device.is_admin?(@user.id), imei: @device.imei,
                    created_at: @device.device_uuid.created_at.strftime('%Y-%m-%d') }
