@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   mount Redactor2Rails::Engine => '/redactor2_rails'
 
+  root to: "admin/suppliers#index"
+
   namespace :api do
     namespace :v1 do
       get 'users/wechat_auth', to: 'users#wechat_auth'
