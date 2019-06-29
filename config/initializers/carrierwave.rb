@@ -1,6 +1,6 @@
 CarrierWave.configure do |config|
   if Rails.env.production?
-  	config.asset_host = 'https://www.jinzhiwen.com'
+  	config.asset_host = 'https://api.jinzhiwen.com'
   else
   	config.asset_host = ''
   end
