@@ -57,6 +57,16 @@ ActiveAdmin.register DeviceUuid do
       row :code
       row :active
       row :qrcode do |du|
+        qrcode = RQRCode::QRCode.new("#{du.uuid},#{du.auth_password}")
+        png = qrcode.as_png(
+          resize_gte_to: false,
+          resize_exactly_to: false,
+          fill: 'white',
+          color: 'black',
+          size: 120,
+          border_modules: 4,
+          module_px_size: 6,
+          file: "#{Rails.root}/app/assets/images/qrcode/#{du.id}.png")
         render_qr_code("#{resource.uuid},#{resource.auth_password}")
       end
       row :actived_at
@@ -76,17 +86,7 @@ ActiveAdmin.register DeviceUuid do
     end
     column :uuid
     column :qrcode do |du|
-      qrcode = RQRCode::QRCode.new("#{du.uuid},#{du.auth_password}")
-      png = qrcode.as_png(
-          resize_gte_to: false,
-          resize_exactly_to: false,
-          fill: 'white',
-          color: 'black',
-          size: 120,
-          border_modules: 4,
-          module_px_size: 6,
-          file: "#{Rails.root}/app/assets/images/qrcode/#{du.id}.png")
-      asset_data_url("qrcode/#{du.id}.png")
+      image_url("qrcode/#{du.id}.png") if File.exist?("#{Rails.root}/app/assets/images/qrcode/#{du.id}.png")
     end
     column :protocol do |du|
       DeviceUuid::PROTOCOL_HASH[du.protocol]
