@@ -21,7 +21,7 @@ ActiveAdmin.register Carousel do
     actions
   end
 
-  show do 
+  show do
     attributes_table do
       row :id
       row :tag do |carousel|

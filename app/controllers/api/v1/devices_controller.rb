@@ -16,7 +16,9 @@ class Api::V1::DevicesController < ApplicationController
     @carousels = []
     home_carousels = Carousel.visible.home.limit(1)
     unless home_carousels.empty?
-      @carousels = home_carousels[0].images
+      home_carousels[0].images.each do |image|
+        @carousels << image.url(:large)
+      end
     end
     respond_to do |format|
       format.json do
@@ -29,7 +31,9 @@ class Api::V1::DevicesController < ApplicationController
     @carousels = []
     device_carousels = Carousel.visible.device.limit(1)
     unless device_carousels.empty?
-      @carousels = device_carousels[0].images
+      device_carousels[0].images.each do |image|
+        @carousels << image.url(:large)
+      end
     end
     respond_to do |format|
       format.json do
