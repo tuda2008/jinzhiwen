@@ -13,7 +13,9 @@ ActiveAdmin.register Carousel do
   index do
     selectable_column
     id_column
-    column(:tag, sortable: false) { |carousel| link_to carousel.tag, admin_carousel_path(carousel) }
+    column :tag do |carousel|
+      Carousel::TAG_HASH[carousel.tag]
+    end
     column :url
     column :visible
     actions
@@ -22,7 +24,9 @@ ActiveAdmin.register Carousel do
   show do 
     attributes_table do
       row :id
-      row :tag
+      row :tag do |carousel|
+        Carousel::TAG_HASH[carousel.tag]
+      end
       row :url
       row :images do |carousel|
         ul do
@@ -43,7 +47,7 @@ ActiveAdmin.register Carousel do
     f.inputs do
       f.input :tag, :as => :select, :collection => Carousel::TAG_COLLECTION, prompt: "请选择"
       f.input :url, hint: '图片的链接地址，没有就留空'
-      f.input :images, as: :file, input_html: { multiple: true }, hint: '尺寸不小于300x400'
+      f.input :images, as: :file, input_html: { multiple: true }, hint: '尺寸不小于400x300'
       f.input :images, as: :file, input_html: { multiple: true }
       f.input :images, as: :file, input_html: { multiple: true }
       f.input :images, as: :file, input_html: { multiple: true }

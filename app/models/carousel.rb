@@ -13,12 +13,13 @@ class Carousel < ApplicationRecord
   TAG_HOME = "home"
   TAG_DEVICE = "device"
   TAG_COLLECTION = [["首页", "home"], ["设备详情", "device"]]
+  TAG_HASH = { "home" => "首页", "device" => "设备详情" }
   mount_uploaders :images, ImageUploader
   serialize :images, Array
 
   validates :tag, presence: true
   validates_uniqueness_of :tag
-  validates :tag, inclusion: {in: ['home', 'devices']} 
+  validates :tag, inclusion: {in: ['home', 'device']} 
   validate :images_not_empty
   
   scope :visible, -> { where(visible: true) }

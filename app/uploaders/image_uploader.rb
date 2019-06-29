@@ -3,15 +3,15 @@ require 'digest/md5'
 class ImageUploader < BaseUploader
 
   version :large do
-    process resize_to_fill: [1280, 640]
+    process resize_to_fill: [1000,450]
   end
   
   version :thumb do
-    process resize_to_fill: [240, 320]
+    process resize_to_fill: [320,240]
   end
   
   version :small, from_version: :thumb do
-    process resize_to_fill: [120, 160]
+    process resize_to_fill: [160,120]
   end
 
   def filename
