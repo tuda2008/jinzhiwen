@@ -41,7 +41,7 @@ gem 'activeadmin', '~> 1.3.0'
 gem 'kaminari', '~> 1.1.0'
 
 # 上传组件
-gem 'carrierwave', '1.2.0'
+gem 'carrierwave', '1.3.2'
 gem 'mini_magick', '~> 4.8'
 # 解决大文件上传报内存问题：Cannot allocate memory - identify
 gem 'posix-spawn'
